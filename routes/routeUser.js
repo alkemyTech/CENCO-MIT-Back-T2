@@ -1,13 +1,13 @@
 import express from 'express';
-const ROUTER = express.Router();
+export const routeUser = express.Router();
 
 // Import Controller
 import { getUser, createUser, updateUser, deleteUser } from '../controllers/userController.js';
 
 //Definition routes using controller methods
-ROUTER.get('/:id', getUser);
-ROUTER.post('/', createUser);
-ROUTER.put('/:id', updateUser);
-ROUTER.delete('/:id', deleteUser);
+routeUser.get('/', getUser);
+routeUser.post('/', createUser);
+routeUser.put('/:id', updateUser);
+routeUser.delete('/:id', deleteUser);
 
-export default ROUTER;
+export default routeUser;

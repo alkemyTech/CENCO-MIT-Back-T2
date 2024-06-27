@@ -1,7 +1,7 @@
 
 export const getUser = (req, res) => {
     ///////////Logic here////////////
-    res.status(404).send('User not found');
+    res.send('User funcinando');
   };
   
   export const createUser = (req, res) => {

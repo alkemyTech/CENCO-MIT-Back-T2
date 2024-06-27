@@ -1,12 +1,11 @@
-
 import express from 'express';
-export const ROUTER = express.Router();
+ export const ROUTER = express.Router();
 
-// Importar el controlador
+// Import controller
 import { getIndex, postIndex, putIndex, delIndex } from '../controllers/indexController.js';
 
 
-// Definir las rutas utilizando los métodos del controlador
+// Define the routes using the controller methods
 ROUTER.get('/', getIndex);
 ROUTER.post('/', postIndex);
 ROUTER.put('/', putIndex);
