@@ -1,13 +1,22 @@
 export const UserController = {
   getUser: (req, res) => {
     ///////////Logic here////////////
-    res.send('User funcinando');
+    res.send('User funcionando');
   },
 
-  createUser: (req, res) => {
-    ///////////Logic here ////////////
-    const newUser = req.body;
-    res.send(`User created: ${JSON.stringify(newUser)}`);
+  getById: (req, res) => {
+    ///////////Logic here////////////
+    res.send('User por id funcionando');
+  },
+
+  createUser: async(req, res) => {
+    const { name, email, password, role } = req.body;
+    try {
+      const newUser = await User.create({ name, email, password, role });
+      res.status(201).json(newUser);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
   },
 
   // Function to handle user
