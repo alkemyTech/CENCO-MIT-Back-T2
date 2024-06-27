@@ -1,21 +1,18 @@
 import express from 'express';
-const app = express();
+import { router } from './src/routes/index.js';
 
-// Routes
-import routeIndex from './routes/routeIndex.js';
-import routeUser from './routes/routeUser.js';
+const app = express();
 
 // Middleware to parse JSON 
 app.use(express.json());
-// Usar las rutas
-app.use('/', routeIndex);
-app.use('/users', routeUser);
 
-/* Port that can be assigned in the live environment
-   If not specified, it defaults to port 3000 */
-   const PORT = process.env.PORT || 3000;
+// Use router
+app.use('/', router);
+
+// Takes port from .env or defaults to 3000
+const port = process.env.PORT || 3000;
 
 // Initialize server
-app.listen(PORT, () => {
-  console.log(`Servidor corriendo en http://localhost:${PORT}`);
+app.listen(port, () => {
+  console.log(`Servidor corriendo en http://localhost:${port}`);
 } );
