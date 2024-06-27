@@ -1,9 +1,9 @@
 {
   "development": {
-    "username": "tu_usuario",
+    "username": "root",
     "password": "tu_contraseña",
-    "database": "nombre_de_tu_base_de_datos",
-    "host": "127.0.0.1",
+    "database": "db",
+    "host": "localhost",
     "dialect": "mysql"
   }
 }

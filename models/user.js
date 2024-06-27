@@ -1,27 +1,30 @@
-const { DataTypes } = require("sequelize");
-const sequelize = require("./index"); // Asegúrate de que la ruta sea correcta
+import { DataTypes } from 'sequelize';
+import sequelize from './index.js';
 
-const User = sequelize.define("User", {
+
+// Define the User Model
+
+const User = sequelize.define('User', {
   name: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: false
   },
   email: {
     type: DataTypes.STRING,
     allowNull: false,
     unique: true,
     validate: {
-      isEmail: true,
-    },
+      isEmail: true
+    }
   },
   password: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: false
   },
   role: {
-    type: DataTypes.ENUM("user", "admin"),
-    defaultValue: "user",
-  },
+    type: DataTypes.ENUM('user', 'admin'),
+    defaultValue: 'user'
+  }
 });
 
-module.exports = User;
+export default User;

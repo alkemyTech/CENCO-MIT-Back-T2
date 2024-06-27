@@ -1,29 +1,21 @@
-const { Sequelize } = require("sequelize");
-const config = require("../config/config.json").development;
+import { Sequelize } from 'sequelize';
+import configFile from '../config/config.json';
+import User from './models/user.js';
 
-const sequelize = new Sequelize(
-  config.database,
-  config.username,
-  config.password,
-  {
-    host: config.host,
-    dialect: config.dialect,
-  }
-);
+// Initialize Sequelize with the database configuration
 
-const User = require("./user");
+const config = configFile.development;
+const sequelize = new Sequelize(config.database, config.username, config.password, {
+  host: config.host,
+  dialect: config.dialect
+});
 
-const init = async () => {
-  try {
-    await sequelize.authenticate();
-    console.log("Connection has been established successfully.");
-    await sequelize.sync({ force: true }); // use { force: true } only in development
-    console.log("Database synchronized.");
-  } catch (error) {
-    console.error("Unable to connect to the database:", error);
-  }
+// Create an object to hold all models
+
+const db = {
+  User,
+  sequelize,
+  Sequelize
 };
 
-init();
-
-module.exports = sequelize;
+export default db;
