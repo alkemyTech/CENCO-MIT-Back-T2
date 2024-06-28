@@ -1,18 +1,21 @@
 import express from 'express';
 import { router } from './src/routes/index.js';
+import pkg from './package.json' with { type: 'json' }; 
 
 const app = express();
+const port = process.env.PORT || 3000;
+
+app.disable('x-powered-by');
+app.set('pkg', pkg);
 
 // Middleware to parse JSON 
 app.use(express.json());
 
-// Use router
 app.use('/', router);
 
-// Takes port from .env or defaults to 3000
-const port = process.env.PORT || 3000;
+app.get('/', (req, res) => res.json({name: pkg.name, version: pkg.version, contributors: pkg.contributors.map(person => person.name)}));
 
 // Initialize server
 app.listen(port, () => {
-  console.log(`Servidor corriendo en http://localhost:${port}`);
+  console.log(`App listening on port ${port}`);
 });
