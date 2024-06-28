@@ -23,10 +23,9 @@ export const UserService = {
       if (!user) return null;
       const isPasswordValid = await bcrypt.compare(password, user.password);
       if (!isPasswordValid) return null;
-      if (isPasswordValid)
-        return jwt.sign({ email, role: user.role }, secret, {
-          expiresIn: '15m',
-        });
+      return jwt.sign({ email, role: user.role }, secret, {
+        expiresIn: '15m',
+      });
     } catch (err) {
       console.error(err);
     }
