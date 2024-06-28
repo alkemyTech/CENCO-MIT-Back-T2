@@ -20,9 +20,7 @@ export const AuthController = {
       const { email, password } = req.body;
       const token = await UserService.login(email, password);
       if (!token) res.send({ message: 'Invalid credentials' });
-      if (token) {
-        res.send({ message: 'Login successful', data: { token } });
-      }
+      res.send({ message: 'Login successful', data: { token } });
       next();
     } catch (err) {
       console.error(err);
