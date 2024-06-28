@@ -36,7 +36,7 @@
   },
   "dependencies": {
     "bcrypt": "^5.1.1",
-    "express": "4.19.2",
+    "express": "^4.19.2",
     "express-rate-limit": "^7.3.1",
     "jsonwebtoken": "^9.0.2",
     "mysql2": "^3.10.1",
@@ -49,7 +49,7 @@
     "@babel/node": "^7.24.7",
     "@babel/plugin-proposal-json-modules": "^7.24.7",
     "@babel/preset-env": "^7.24.7",
-    "@babel/types": "7.24.7",
+    "@babel/types": "^7.24.7",
     "@stylistic/eslint-plugin": "^2.3.0",
     "@types/bcrypt": "^5.0.2",
     "@types/eslint": "^8.56.10",
@@ -65,4 +65,3 @@
   },
   "homepage": "https://github.com/alkemyTech/CENCO-MIT-Back-T2#readme"
 }
-
