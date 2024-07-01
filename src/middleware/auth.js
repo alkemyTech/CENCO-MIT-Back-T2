@@ -2,15 +2,24 @@ import jwt from 'jsonwebtoken';
 
 const secret = process.env.JWT_SECRET;
 
-export const authenticateToken = (req, res, next) => {
+export const isAuthenticated = (req, res, next) => {
   const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1];
+  if (!authHeader)
+    res.status(401).json({ message: 'Authorization header is required' }); // No auth header provided
 
-  if (!token) return res.sendStatus(401); // No token provided
+  const token = authHeader.split(' ')[1];
+  if (!token) res.status(401).json({ message: 'No token provided' }); // No token provided
 
   jwt.verify(token, secret, (err, user) => {
-    if (err) return res.sendStatus(401); // Token is invalid
-    req.user = user; // Attach user information to request
+    if (err) res.status(401).json({ message: 'Invalid token' }); // Token is invalid
+    req.user = user; // Add user to request
     next();
   });
+};
+
+export const isAdmin = (req, res, next) => {
+  if (!req.user || req.user.role !== 'admin') {
+    return res.status(403).json({ message: 'Admin role required' }); // Admin role required
+  }
+  next();
 };
