@@ -6,7 +6,7 @@ const salt = process.env.SALT;
 const secret = process.env.JWT_SECRET;
 
 export const UserService = {
-  create: async user => {
+  create: async (user) => {
     try {
       const hash = await bcrypt.hash(user.password, parseInt(salt));
       user.password = hash;
@@ -33,11 +33,11 @@ export const UserService = {
 
   getUsers: async () => UserRepository.getUsers(),
 
-  getById: async id => UserRepository.getById(id),
+  getById: async (id) => UserRepository.getById(id),
 
-  getByEmail: async email => UserRepository.getByEmail(email),
+  getByEmail: async (email) => UserRepository.getByEmail(email),
 
   updateUser: async (user, id) => UserRepository.updateUser(user, id),
 
-  deleteUser: async id => UserRepository.deleteUser(id),
+  deleteUser: async (id) => UserRepository.deleteUser(id),
 };
