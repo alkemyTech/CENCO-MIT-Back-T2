@@ -4,13 +4,18 @@ export const AuthController = {
   signup: async function (req, res, next) {
     try {
       const user = req.body;
-      await UserService.create(user);
-      const newUser = await UserService.getByEmail(user.email);
-      delete newUser.dataValues.password;
-      res.send(newUser);
+      const userCreated = await UserService.create(user);
+      delete userCreated.password;
+      res.send({
+        message: 'Signup successfuly',
+        data: userCreated
+      });
       next();
     } catch (error) {
-      console.error(error);
+      console.error('Error controller ->', error.message);
+      res.status(400).json({
+        message: error.message
+      });
       next(error);
     }
   },

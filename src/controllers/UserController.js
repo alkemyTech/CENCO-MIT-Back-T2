@@ -1,19 +1,34 @@
 import { UserService } from '../services/index.js';
 
 export const UserController = {
+  
   getAllUsers: async function (req, res, next) {
     try {
       const users = await UserService.getAllUsers(); 
-      const allUsersSend = users.map((user) => ({
+      const allUsersSend = users.map(user => ({
         id: user.id,
         username: user.username,
         role: user.role,
       }));
       res.send(allUsersSend);
+      } catch (err) {
+      console.error(err);
+      next(err);
+  },
+
+  getUserInfo: async function (req, res, next) {
+    try {
+      const email = req.user.email; // get the email of the decoded token
+      const data = await UserService.getByEmail(email);
+      if (!data) {
+        return res.status(404).send('User not found');
+      }
+      const user = data.dataValues;
+      delete user.password;
+      res.send(user);
     } catch (err) {
       console.error(err);
       next(err);
-    }
   },
 
   getById: async function (req, res, next) {
@@ -62,7 +77,7 @@ export const UserController = {
       res.send(
         isUserDeleted === 1
           ? 'User deleted successfully'
-          :  'Error deleting user'
+          : ' Error deleting user'
       );
     } catch (err) {
       console.error(err);

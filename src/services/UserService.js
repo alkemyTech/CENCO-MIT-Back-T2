@@ -6,16 +6,25 @@ const salt = process.env.SALT;
 const secret = process.env.JWT_SECRET;
 
 export const UserService = {
-  create: async user => {
+  create: async (user) => {
     try {
+      const userFound = await UserRepository.getByEmail(user.email);
+      if (userFound) throw new Error('User already exists');
       const hash = await bcrypt.hash(user.password, parseInt(salt));
       user.password = hash;
       await UserRepository.postUser(user);
+      return user;
     } catch (error) {
-      console.error(error);
+      console.error('Error service ->', error.message);
+      throw new Error(error.message);
     }
   },
 
+
+
+
+
+  
   login: async function (email, password) {
     try {
       const data = await UserService.getByEmail(email);
@@ -33,11 +42,11 @@ export const UserService = {
 
   getUsers: async () => UserRepository.getUsers(),
 
-  getById: async id => UserRepository.getById(id),
+  getById: async (id) => UserRepository.getById(id),
 
-  getByEmail: async email => UserRepository.getByEmail(email),
+  getByEmail: async (email) => UserRepository.getByEmail(email),
 
   updateUser: async (user, id) => UserRepository.updateUser(user, id),
 
-  deleteUser: async id => UserRepository.deleteUser(id),
+  deleteUser: async (id) => UserRepository.deleteUser(id),
 };
