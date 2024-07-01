@@ -15,6 +15,19 @@ export const UserController = {
       next(err);
     }
   },
+  getUserInfo: async function (req, res, next) {
+    try {
+      console.log('User email from request:', req.user.email); // Log the email
+      const data = await UserService.getByEmail(email);
+      const user = data.dataValues;
+      if (!user) return res.status(404).send('User not found');
+      delete user.dataValues.password; // Elimina la contraseña de los datos enviados
+      res.send(user);
+    } catch (err) {
+      console.error(err);
+      next(err);
+    }
+  },
 
   getById: async function (req, res, next) {
     const { id } = req.params;
@@ -84,7 +97,7 @@ export const UserController = {
       res.send(
         isUserDeleted === 1
           ? 'User deleted successfully'
-          :  'Error deleting user'
+          : 'Error deleting user'
       );
     } catch (err) {
       next(err);

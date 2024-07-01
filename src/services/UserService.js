@@ -7,7 +7,7 @@ const salt = process.env.SALT;
 const secret = process.env.JWT_SECRET;
 
 export const UserService = {
-  create: async user => {
+  create: async (user) => {
     try {
       const userFound = await UserRepository.getByEmail(user.email);
       if (userFound) throw new Error('User already exists');
@@ -43,9 +43,9 @@ export const UserService = {
 
   getUsers: async () => UserRepository.getUsers(),
 
-  getById: async id => UserRepository.getById(id),
+  getById: async (id) => UserRepository.getById(id),
 
-  getByEmail: async email => UserRepository.getByEmail(email),
+  getByEmail: async (email) => UserRepository.getByEmail(email),
 
   updateUser: async (user, id) => {
     try {
@@ -58,5 +58,5 @@ export const UserService = {
     }
   },
 
-  deleteUser: async id => UserRepository.deleteUser(id),
+  deleteUser: async (id) => UserRepository.deleteUser(id),
 };
