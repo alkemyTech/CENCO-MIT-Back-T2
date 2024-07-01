@@ -9,16 +9,22 @@ export const UserService = {
   create: async user => {
     try {
       const userFound = await UserRepository.getByEmail(user.email);
-      if(userFound) return null;
+      if (userFound) throw new Error('User already exists');
       const hash = await bcrypt.hash(user.password, parseInt(salt));
       user.password = hash;
       await UserRepository.postUser(user);
       return user;
     } catch (error) {
-      console.error(error);
+      console.error('Error service ->', error.message);
+      throw new Error(error.message);
     }
   },
 
+
+
+
+
+  
   login: async function (email, password) {
     try {
       const data = await UserService.getByEmail(email);

@@ -5,20 +5,17 @@ export const AuthController = {
     try {
       const user = req.body;
       const userCreated = await UserService.create(user);
-      if (!userCreated) {
-        res.status(400).json({
-        message: 'User already exists'
-        });
-      } else {
-        delete userCreated.password;
-        res.send({
-          message: 'Signup successfuly',
-          data: userCreated
-        });
-        next();
-      }
+      delete userCreated.password;
+      res.send({
+        message: 'Signup successfuly',
+        data: userCreated
+      });
+      next();
     } catch (error) {
-      console.error(error);
+      console.error('Error controller ->', error.message);
+      res.status(400).json({
+        message: error.message
+      });
       next(error);
     }
   },
