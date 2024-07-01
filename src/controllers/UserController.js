@@ -1,12 +1,17 @@
 import { UserService } from '../services/index.js';
 
 export const UserController = {
-  getUsers: async function (req, res, next) {
+  getAllUsers: async function (req, res, next) {
     try {
-      const users = await UserService.getUsers();
-      users.forEach(u => delete u.dataValues.password);
-      res.send(users);
+      const users = await UserService.getAllUsers(); 
+      const allUsersSend = users.map((user) => ({
+        id: user.id,
+        username: user.username,
+        role: user.role,
+      }));
+      res.send(allUsersSend);
     } catch (err) {
+      console.error(err);
       next(err);
     }
   },
@@ -60,16 +65,11 @@ export const UserController = {
         res.status(400).json({ error: 'Invalid user update request' });
       }
       const isUserUpdated = await UserService.updateUser(user, id);
-      const result = isUserUpdated[0] === 1;
-      const updatedUser = await UserService.getById(id);
-      delete updatedUser.dataValues.password;
-      res
-        .status(result ? 200 : 500)
-        .json(
-          result
-            ? { message: 'User updated successfully', user: updatedUser }
-            : { error: ' Error updating user' }
-        );
+      res.send(
+        isUserUpdated[0] === 1
+          ? 'User updated successfully'
+          : 'Error updating user'
+      );
     } catch (err) {
       next(err);
     }
@@ -81,14 +81,11 @@ export const UserController = {
       const userFound = await UserService.getById(id);
       if (!userFound) res.status(404).json({ error: 'User not found' });
       const isUserDeleted = await UserService.deleteUser(id);
-      const result = isUserDeleted === 1;
-      res
-        .status(result ? 200 : 500)
-        .json(
-          result
-            ? { message: 'User deleted successfully' }
-            : { error: ' Error deleting user' }
-        );
+      res.send(
+        isUserDeleted === 1
+          ? 'User deleted successfully'
+          :  'Error deleting user'
+      );
     } catch (err) {
       next(err);
     }
