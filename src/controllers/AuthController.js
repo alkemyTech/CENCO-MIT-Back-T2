@@ -4,11 +4,19 @@ export const AuthController = {
   signup: async function (req, res, next) {
     try {
       const user = req.body;
-      await UserService.create(user);
-      const newUser = await UserService.getByEmail(user.email);
-      delete newUser.dataValues.password;
-      res.send(newUser);
-      next();
+      const userCreated = await UserService.create(user);
+      if (!userCreated) {
+        res.status(400).json({
+        message: 'User already exists'
+        });
+      } else {
+        delete userCreated.password;
+        res.send({
+          message: 'Signup successfuly',
+          data: userCreated
+        });
+        next();
+      }
     } catch (error) {
       console.error(error);
       next(error);

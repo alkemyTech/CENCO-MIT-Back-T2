@@ -8,9 +8,12 @@ const secret = process.env.JWT_SECRET;
 export const UserService = {
   create: async user => {
     try {
+      const userFound = await UserRepository.getByEmail(user.email);
+      if(userFound) return null;
       const hash = await bcrypt.hash(user.password, parseInt(salt));
       user.password = hash;
       await UserRepository.postUser(user);
+      return user;
     } catch (error) {
       console.error(error);
     }
