@@ -28,9 +28,15 @@ export const UserController = {
     try {
       const foundUser = await UserService.getByEmail(user.email);
       if (foundUser) res.status(400).json({ error: 'User already exists' });
-      if (!user || !user.name || !user.surname || !user.email || !user.password) {
+      if (
+        !user ||
+        !user.name ||
+        !user.surname ||
+        !user.email ||
+        !user.password
+      ) {
         res.status(400).json({ error: 'Invalid user data format' });
-      };
+      }
       await UserService.create(user);
       const newUser = await UserService.getByEmail(user.email);
       delete newUser.dataValues.password;
@@ -47,7 +53,10 @@ export const UserController = {
     try {
       const userFound = await UserService.getById(id);
       if (!userFound) res.status(404).json({ error: 'User not found' });
-      if (!user || !(user.name && user.surname && user.password && user.email))  {
+      if (
+        !user ||
+        !(user.name && user.surname && user.password && user.email)
+      ) {
         res.status(400).json({ error: 'Invalid user update request' });
       }
       const isUserUpdated = await UserService.updateUser(user, id);

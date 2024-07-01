@@ -9,12 +9,35 @@ const secret = process.env.JWT_SECRET;
 export const UserService = {
   create: async user => {
     try {
-      if (!isEmailValid(user.email)) return;
+      const foundUser = await UserRepository.getByEmail(user.email);
+      const err = new Error();
+      if (foundUser) {
+        err.message = 'User already exists';
+        err.statusCode = 400;
+        throw err;
+      }
+      if (!isEmailValid(user.email)) {
+        err.message = 'Invalid email';
+        err.statusCode = 400;
+        throw err;
+      }
+      if(!user || !user.name || !user.surname || !user.email || !user.password) {
+        err.message = 'Invalid user data';
+        err.statusCode = 400;
+        throw err;
+      }
+      if (user.role && (user.role !== 'admin' && user.role !== 'user')) {
+        err.message = 'Invalid role';
+        err.statusCode = 400;
+        throw err;
+      }
       const hash = await bcrypt.hash(user.password, parseInt(salt));
       user.password = hash;
-      await UserRepository.postUser(user);
+      const newUser = await UserRepository.postUser(user);
+      delete newUser.dataValues.password;
+      return newUser;
     } catch (error) {
-      console.error(error);
+      throw error;
     }
   },
 

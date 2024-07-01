@@ -9,8 +9,7 @@ const httpErrors = {
 const isKnownStatus = (status) => typeof status === 'number' && Object.keys(httpErrors).indexOf(`${status}`) >= 0;
 
 export const errorHandler = (err, req, res, next) => {
-  console.error(err.stack);
-  const statusCode = isKnownStatus ? err : err.statusCode || 500;
+  const statusCode = isKnownStatus ? err.statusCode || 500 : err;
   const message = err.message || httpErrors[statusCode] || 'Something went wrong';
   res.status(statusCode).json({ statusCode, message });
   next();

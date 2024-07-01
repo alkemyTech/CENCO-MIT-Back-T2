@@ -1,31 +1,12 @@
 import { UserService } from '../services/index.js';
-import { isEmailValid } from '../utils/index.js';
 
 export const AuthController = {
   signup: async function (req, res, next) {
     try {
       const user = req.body;
-      const foundUser = await UserService.getByEmail(user.email);
-      if (foundUser) res.status(400).json({ error: 'User already exists' });
-      if (
-        !user ||
-        !user.name ||
-        !user.surname ||
-        !user.email ||
-        !user.password
-      ) {
-        res.status(400).json({ error: 'Invalid user format' });
-      }
-      if (!isEmailValid(user.email)) res.status(400).json({ error: 'Invalid email' });
-      if (user.role && (user.role !== 'admin' || user.role !== 'user')) {
-        res.status(400).json({ error: 'Invalid role' });
-      }
-      await UserService.create(user);
-      const newUser = await UserService.getByEmail(user.email);
-      if (!newUser) res.status(500).json({ error: 'Error creating user' });
-      delete newUser.dataValues.password;
-      res.send(newUser);
-      next();
+      const newUser = await UserService.create(user);
+      delete newUser.password;
+      res.status(201).json(newUser);
     } catch (error) {
       next(error);
     }
