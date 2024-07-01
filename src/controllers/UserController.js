@@ -3,8 +3,8 @@ import { UserService } from '../services/index.js';
 export const UserController = {
   getAllUsers: async function (req, res, next) {
     try {
-      const users = await UserService.getAllUsers(); 
-      const allUsersSend = users.map((user) => ({
+      const users = await UserService.getAllUsers();
+      const allUsersSend = users.map(user => ({
         id: user.id,
         username: user.username,
         role: user.role,
@@ -17,7 +17,7 @@ export const UserController = {
   },
   getUserInfo: async function (req, res, next) {
     try {
-      const email = req.user.email; // get the email of the decoded token
+      const email = req.user.email;
       const data = await UserService.getByEmail(email);
 
       if (!data) {

@@ -11,7 +11,14 @@ app.set('pkg', pkg);
 app.use(express.json());
 app.use(rateLimiter);
 app.use('/', router);
-app.get('/', (req, res) => res.json({name: pkg.name, version: pkg.version, contributors: pkg.contributors.map(person => person.name)}));
+app.get('/', (req, res) =>
+  res.json({
+    app: 'Talent Manager 📴',
+    name: pkg.name,
+    version: pkg.version,
+    contributors: pkg.contributors.map((person) => person.name),
+  })
+);
 app.use(errorHandler);
 app.listen(port, () => {
   console.log(`App listening on port http://localhost:${port}`);
