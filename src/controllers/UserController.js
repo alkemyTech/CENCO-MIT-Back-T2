@@ -1,11 +1,25 @@
 import { UserService } from '../services/index.js';
 
 export const UserController = {
+  
+  getAllUsers: async function (req, res, next) {
+    try {
+      const users = await UserService.getAllUsers(); 
+      const allUsersSend = users.map(user => ({
+        id: user.id,
+        username: user.username,
+        role: user.role,
+      }));
+      res.send(allUsersSend);
+      } catch (err) {
+      console.error(err);
+      next(err);
+  },
+
   getUserInfo: async function (req, res, next) {
     try {
       const email = req.user.email; // get the email of the decoded token
       const data = await UserService.getByEmail(email);
-
       if (!data) {
         return res.status(404).send('User not found');
       }
@@ -15,13 +29,6 @@ export const UserController = {
     } catch (err) {
       console.error(err);
       next(err);
-    }
-  },
-
-  getUsers: async function (req, res, next) {
-    // TO DO
-    res.send('Getting users');
-    next();
   },
 
   getById: async function (req, res, next) {
