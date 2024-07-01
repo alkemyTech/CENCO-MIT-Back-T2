@@ -9,7 +9,7 @@ export const authenticateToken = (req, res, next) => {
   if (!token) return res.sendStatus(401); // No token provided
 
   jwt.verify(token, secret, (err, user) => {
-    if (err) return res.sendStatus(403); // Token is invalid
+    if (err) return res.sendStatus(401); // Token is invalid
     req.user = user; // Attach user information to request
     next();
   });
