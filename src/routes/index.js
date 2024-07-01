@@ -5,4 +5,4 @@ import { AuthRouter } from './AuthRouter.js';
 export const router = Router();
 
 router.use('/auth', AuthRouter); //login
-router.use('/users', UserRouter); // obtener todos los usuarios
+router.use('/users', UserRouter); // get all users

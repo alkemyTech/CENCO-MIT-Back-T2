@@ -3,11 +3,14 @@ import { UserService } from '../services/index.js';
 export const UserController = {
   getUserInfo: async function (req, res, next) {
     try {
-      console.log('User email from request:', req.user.email); // Log the email
+      const email = req.user.email; // get the email of the decoded token
       const data = await UserService.getByEmail(email);
+
+      if (!data) {
+        return res.status(404).send('User not found');
+      }
       const user = data.dataValues;
-      if (!user) return res.status(404).send('User not found');
-      delete user.dataValues.password; // Elimina la contraseña de los datos enviados
+      delete user.password;
       res.send(user);
     } catch (err) {
       console.error(err);
