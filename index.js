@@ -16,7 +16,7 @@ app.get('/', (req, res) =>
     app: 'Talent Manager 📴',
     name: pkg.name,
     version: pkg.version,
-    contributors: pkg.contributors.map((person) => person.name),
+    contributors: pkg.contributors.map(person => person.name),
   })
 );
 app.use(errorHandler);

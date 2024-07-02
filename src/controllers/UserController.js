@@ -3,31 +3,24 @@ import { UserService } from '../services/index.js';
 export const UserController = {
   getAllUsers: async function (req, res, next) {
     try {
-      const users = await UserService.getAllUsers();
-      const allUsersSend = users.map(user => ({
-        id: user.id,
-        username: user.username,
-        role: user.role,
-      }));
-      res.send(allUsersSend);
+      const users = await UserService.getUsers();
+      const foundUsers = users.map(user => {
+        delete user.dataValues.password;
+        return user;
+      });
+      res.send(foundUsers);
     } catch (err) {
-      console.error(err);
       next(err);
     }
   },
   getUserInfo: async function (req, res, next) {
     try {
-      const email = req.user.email;
-      const data = await UserService.getByEmail(email);
-
-      if (!data) {
-        return res.status(404).send('User not found');
-      }
-      const user = data.dataValues;
-      delete user.password;
+      const email = req.user.email; 
+      const user = await UserService.getByEmail(email);
+      if (!user) res.status(404).json({ message: 'User not found' });
       res.send(user);
+      next();
     } catch (err) {
-      console.error(err);
       next(err);
     }
   },
@@ -36,33 +29,19 @@ export const UserController = {
     const { id } = req.params;
     try {
       const user = await UserService.getById(id);
-      if (!user) res.status(404).json({ error: 'User not found' });
-      delete user.dataValues.password;
+      if (!user) res.status(404).json({ message: 'User not found' });
       res.send(user);
-    } catch (err) {
-      next(err);
+    } catch (error) {
+      next(error);
     }
   },
 
   createUser: async (req, res, next) => {
     const user = req.body;
     try {
-      const foundUser = await UserService.getByEmail(user.email);
-      if (foundUser) res.status(400).json({ error: 'User already exists' });
-      if (
-        !user ||
-        !user.name ||
-        !user.surname ||
-        !user.email ||
-        !user.password
-      ) {
-        res.status(400).json({ error: 'Invalid user data format' });
-      }
       await UserService.create(user);
       const newUser = await UserService.getByEmail(user.email);
-      delete newUser.dataValues.password;
-      res.send(newUser);
-      next();
+      res.status(201).json(newUser);
     } catch (error) {
       next(error);
     }
@@ -72,20 +51,9 @@ export const UserController = {
     const user = req.body;
     const { id } = req.params;
     try {
-      const userFound = await UserService.getById(id);
-      if (!userFound) res.status(404).json({ error: 'User not found' });
-      if (
-        !user ||
-        !(user.name && user.surname && user.password && user.email)
-      ) {
-        res.status(400).json({ error: 'Invalid user update request' });
-      }
-      const isUserUpdated = await UserService.updateUser(user, id);
-      res.send(
-        isUserUpdated[0] === 1
-          ? 'User updated successfully'
-          : 'Error updating user'
-      );
+      const updatedUser = await UserService.updateUser(user, id);
+      if (!updatedUser) res.status(500).json({ error: 'Error updating user' });
+      res.send({message: 'User updated successfully', user: updatedUser});
     } catch (err) {
       next(err);
     }
@@ -96,12 +64,9 @@ export const UserController = {
     try {
       const userFound = await UserService.getById(id);
       if (!userFound) res.status(404).json({ error: 'User not found' });
-      const isUserDeleted = await UserService.deleteUser(id);
-      res.send(
-        isUserDeleted === 1
-          ? 'User deleted successfully'
-          : 'Error deleting user'
-      );
+      const isUserDeleted = (await UserService.deleteUser(id)) === 1;
+      if (!isUserDeleted) res.status(500).json({ error: 'Error deleting user' });
+      res.send({ message: 'User deleted successfully' });
     } catch (err) {
       next(err);
     }

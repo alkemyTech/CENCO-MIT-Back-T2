@@ -5,9 +5,8 @@ export const AuthController = {
     try {
       const user = req.body;
       const userCreated = await UserService.create(user);
-      delete userCreated.password;
-      res.send({
-        message: 'Signup successfuly',
+      res.status(201).json({
+        message: 'Signed up successfully',
         data: userCreated
       });
       next();
@@ -21,7 +20,7 @@ export const AuthController = {
       const { email, password } = req.body;
       const token = await UserService.login(email, password);
       if (!token) res.status(400).json({ error: 'Invalid credentials' });
-      res.send({ message: 'Login successful', data: { token } });
+      res.send({ message: 'Logged in successfully', data: { token } });
       next();
     } catch (err) {
       next(err);

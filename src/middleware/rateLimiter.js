@@ -5,5 +5,5 @@ export const rateLimiter = rateLimit({
   limit: 10, 
   standardHeaders: 'draft-7',
   legacyHeaders: false,
-  message: 'You have exceeded the maximum amount of requests per minute.'
+  message: { error : 'You have exceeded the maximum amount of requests per minute.' }
 });
