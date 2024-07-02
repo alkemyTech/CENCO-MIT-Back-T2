@@ -2,7 +2,6 @@ import { Router } from 'express';
 import { UserController } from '../controllers/UserController.js';
 import { isAdmin, isAuthenticated } from '../middleware/index.js';
 
-
 export const UserRouter = Router();
 
 UserRouter.get('/', isAuthenticated, isAdmin, UserController.getUsers);

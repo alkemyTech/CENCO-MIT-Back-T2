@@ -9,7 +9,6 @@ export const AuthController = {
         message: 'Signed up successfully',
         data: userCreated
       });
-      next();
     } catch (error) {
       next(error);
     }
@@ -21,7 +20,6 @@ export const AuthController = {
       const token = await UserService.login(email, password);
       if (!token) res.status(400).json({ error: 'Invalid credentials' });
       res.send({ message: 'Logged in successfully', data: { token } });
-      next();
     } catch (err) {
       next(err);
     }
