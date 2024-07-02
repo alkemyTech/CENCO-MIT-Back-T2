@@ -5,17 +5,11 @@ export const AuthController = {
     try {
       const user = req.body;
       const userCreated = await UserService.create(user);
-      delete userCreated.password;
-      res.send({
-        message: 'Signup successfuly',
+      res.status(201).json({
+        message: 'Signed up successfully',
         data: userCreated
       });
-      next();
     } catch (error) {
-      console.error('Error controller ->', error.message);
-      res.status(400).json({
-        message: error.message
-      });
       next(error);
     }
   },
@@ -24,11 +18,9 @@ export const AuthController = {
     try {
       const { email, password } = req.body;
       const token = await UserService.login(email, password);
-      if (!token) res.send({ message: 'Invalid credentials' });
-      res.send({ message: 'Login successful', data: { token } });
-      next();
+      if (!token) res.status(400).json({ error: 'Invalid credentials' });
+      res.send({ message: 'Logged in successfully', data: { token } });
     } catch (err) {
-      console.error(err);
       next(err);
     }
   },

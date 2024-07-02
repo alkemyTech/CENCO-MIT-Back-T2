@@ -4,5 +4,5 @@ import { AuthRouter } from './AuthRouter.js';
 
 export const router = Router();
 
-router.use('/auth', AuthRouter); //login
-router.use('/users', UserRouter); // get all users
+router.use('/auth', AuthRouter); // auth endpoints
+router.use('/users', UserRouter); // all user req endpoints

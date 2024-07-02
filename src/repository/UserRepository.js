@@ -2,7 +2,7 @@ import { User } from '../models/user.js';
 
 export const UserRepository = {
   getUsers: async function () {
-    // TO DO
+    return await User.findAll();
   },
 
   getById: async function (id) {
