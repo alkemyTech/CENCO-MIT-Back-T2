@@ -18,7 +18,6 @@ export const UserController = {
       const email = req.user.email; 
       const user = await UserService.getByEmail(email);
       res.send(user);
-      next();
     } catch (err) {
       next(err);
     }
