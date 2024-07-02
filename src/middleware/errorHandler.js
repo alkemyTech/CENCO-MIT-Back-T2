@@ -12,7 +12,6 @@ const isKnownStatus = status =>
 
 export const errorHandler = (err, req, res, next) => {
   if (err) {
-    console.log('error here', err);
     const statusCode = isKnownStatus(err.statusCode)
       ? err.statusCode || 500
       : err;

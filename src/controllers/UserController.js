@@ -1,14 +1,14 @@
 import { UserService } from '../services/index.js';
 
 export const UserController = {
-  getAllUsers: async function (req, res, next) {
+  getUsers: async function (req, res, next) {
     try {
       const users = await UserService.getUsers();
-      const foundUsers = users.map(user => {
+      users.forEach(user => {
         delete user.dataValues.password;
         return user;
       });
-      res.send(foundUsers);
+      res.send(users);
     } catch (err) {
       next(err);
     }
@@ -17,7 +17,6 @@ export const UserController = {
     try {
       const email = req.user.email; 
       const user = await UserService.getByEmail(email);
-      if (!user) res.status(404).json({ message: 'User not found' });
       res.send(user);
       next();
     } catch (err) {
@@ -29,7 +28,6 @@ export const UserController = {
     const { id } = req.params;
     try {
       const user = await UserService.getById(id);
-      if (!user) res.status(404).json({ message: 'User not found' });
       res.send(user);
     } catch (error) {
       next(error);
@@ -41,6 +39,7 @@ export const UserController = {
     try {
       await UserService.create(user);
       const newUser = await UserService.getByEmail(user.email);
+      if (!newUser) res.status(500).json({ error: 'Error creating user' });
       res.status(201).json(newUser);
     } catch (error) {
       next(error);
@@ -62,8 +61,6 @@ export const UserController = {
   deleteUser: async function (req, res, next) {
     const { id } = req.params;
     try {
-      const userFound = await UserService.getById(id);
-      if (!userFound) res.status(404).json({ error: 'User not found' });
       const isUserDeleted = (await UserService.deleteUser(id)) === 1;
       if (!isUserDeleted) res.status(500).json({ error: 'Error deleting user' });
       res.send({ message: 'User deleted successfully' });

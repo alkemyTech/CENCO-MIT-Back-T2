@@ -5,7 +5,7 @@ import { isAdmin, isAuthenticated } from '../middleware/index.js';
 
 export const UserRouter = Router();
 
-UserRouter.get('/', isAuthenticated, isAdmin, UserController.getAllUsers);
+UserRouter.get('/', isAuthenticated, isAdmin, UserController.getUsers);
 UserRouter.get('/info', isAuthenticated, UserController.getUserInfo); 
 UserRouter.get('/:id', UserController.getById);
 UserRouter.post('/', UserController.createUser);
