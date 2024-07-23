@@ -1,32 +1,31 @@
-import stylisticJs from '@stylistic/eslint-plugin';
-import babelParser from '@babel/eslint-parser';
+const parser = require('@typescript-eslint/parser')
 
-export default [
-  {
-    files: ['*.js', '**/*.js'],
-    plugins: {
-      '@stylistic/js': stylisticJs,
+module.exports = {
+  languageOptions: {
+    ecmaVersion: 'latest',
+    sourceType: 'module',
+    globals: {
+      env: 'writable',
+      jest: 'writable',
     },
-    rules: {
-      'no-unused-vars': 'error',
-      'no-var': 'error',
-      'comma-spacing': ['error', { before: false, after: true }],
-      semi: ['error', 'always', { omitLastInOneLineBlock: true }],
-      quotes: ['error', 'single'],
-    },
-    languageOptions: {
-      ecmaVersion: 'latest',
-      sourceType: 'module',
-      parser: babelParser,
-      parserOptions: {
-        requireConfigFile: false,
-        babelOptions: {
-          babelrc: false,
-          configFile: false,
-          presets: ['@babel/preset-env'],
-          plugins: ['@babel/plugin-proposal-json-modules'],
-        },
-      },
+    parser: parser,
+    parserOptions: {
+      // project: 'tsconfig.json',
+      requireConfigFile: false,
+      tsconfigRootDir: __dirname,
+      plugins: ['@typescript-eslint/eslint-plugin'],
+      extends: [
+        'plugin:@typescript-eslint/recommended',
+        'plugin:prettier/recommended',
+      ],
     },
   },
-];
+
+  ignores: ['eslint.config.js'],
+  rules: {
+    '@typescript-eslint/interface-name-prefix': 'off',
+    '@typescript-eslint/explicit-function-return-type': 'off',
+    '@typescript-eslint/explicit-module-boundary-types': 'off',
+    '@typescript-eslint/no-explicit-any': 'off',
+  },
+};
