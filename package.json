@@ -1,67 +1,78 @@
 {
   "name": "cenco-mit-back-t2",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "",
-  "main": "index.js",
-  "type": "module",
-  "contributors": [
-    {
-      "name": "Sara Rioseco",
-      "email": "sara.rioseco@gmail.com",
-      "url": "https://github.com/sara-rioseco"
-    },
-    {
-      "name": "Gabriela Moya",
-      "email": "g.moyamoreno@gmail.com",
-      "url": "https://github.com/gabibot"
-    },
-    {
-      "name": "Silvana Vitali",
-      "email": "silgivia@hotmail.com",
-      "url": "https://github.com/silvanavitali"
-    },
-    {
-      "name": "Sara López",
-      "email": "saralopezbz@gmail.com",
-      "url": "https://github.com/saralopezbz"
-    }
-  ],
+  "author": "",
+  "private": true,
+  "license": "UNLICENSED",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "node --watch --env-file=.env index.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/alkemyTech/CENCO-MIT-Back-T2.git"
+    "build": "nest build",
+    "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
+    "start": "nest start -- -b swc",
+    "start:dev": "nest start --watch -- -b swc",
+    "start:debug": "nest start --debug --watch",
+    "start:prod": "node dist/main",
+    "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:cov": "jest --coverage",
+    "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
+    "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
+    "@nestjs/common": "^10.0.0",
+    "@nestjs/config": "^3.2.3",
+    "@nestjs/core": "^10.0.0",
+    "@nestjs/jwt": "^10.2.0",
+    "@nestjs/mapped-types": "^2.0.5",
+    "@nestjs/platform-express": "^10.0.0",
+    "@nestjs/typeorm": "^10.0.2",
     "bcrypt": "^5.1.1",
-    "express": "^4.19.2",
-    "express-rate-limit": "^7.3.1",
-    "jsonwebtoken": "^9.0.2",
-    "mysql2": "^3.10.1",
-    "sequelize": "^6.37.3"
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.1",
+    "reflect-metadata": "^0.2.0",
+    "rxjs": "^7.8.1",
+    "typeorm": "^0.3.20"
   },
   "devDependencies": {
-    "@babel/cli": "^7.24.7",
-    "@babel/core": "^7.24.7",
-    "@babel/eslint-parser": "^7.24.7",
-    "@babel/node": "^7.24.7",
-    "@babel/plugin-proposal-json-modules": "^7.24.7",
-    "@babel/preset-env": "^7.24.7",
-    "@babel/types": "^7.24.7",
-    "@stylistic/eslint-plugin": "^2.3.0",
+    "@nestjs/cli": "^10.0.0",
+    "@nestjs/schematics": "^10.0.0",
+    "@nestjs/testing": "^10.0.0",
     "@types/bcrypt": "^5.0.2",
-    "@types/eslint": "^8.56.10",
-    "@types/express": "^4.17.21",
-    "@types/jsonwebtoken": "^9.0.6",
-    "eslint": "^9.5.0",
-    "jest": "29.7.0"
+    "@types/express": "^4.17.17",
+    "@types/jest": "^29.5.2",
+    "@types/node": "^20.3.1",
+    "@types/supertest": "^6.0.0",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "eslint": "^8.42.0",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-prettier": "^5.0.0",
+    "jest": "^29.5.0",
+    "prettier": "^3.0.0",
+    "source-map-support": "^0.5.21",
+    "supertest": "^6.3.3",
+    "ts-jest": "^29.1.0",
+    "ts-loader": "^9.4.3",
+    "ts-node": "^10.9.1",
+    "tsconfig-paths": "^4.2.0",
+    "typescript": "^5.1.3"
   },
-  "author": "",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/alkemyTech/CENCO-MIT-Back-T2/issues"
-  },
-  "homepage": "https://github.com/alkemyTech/CENCO-MIT-Back-T2#readme"
+  "jest": {
+    "moduleFileExtensions": [
+      "js",
+      "json",
+      "ts"
+    ],
+    "rootDir": "src",
+    "testRegex": ".*\\.spec\\.ts$",
+    "transform": {
+      "^.+\\.(t|j)s$": "ts-jest"
+    },
+    "collectCoverageFrom": [
+      "**/*.(t|j)s"
+    ],
+    "coverageDirectory": "../coverage",
+    "testEnvironment": "node"
+  }
 }
