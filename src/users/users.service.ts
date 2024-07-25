@@ -9,6 +9,7 @@ import { User } from './entities';
 import { Repository } from 'typeorm';
 import { UUID, randomUUID } from 'crypto';
 import { genSalt, hash } from 'bcrypt';
+import { response } from 'express';
 
 @Injectable()
 export class UsersService {
@@ -57,6 +58,13 @@ export class UsersService {
   }
 
   async remove(id: UUID) {
-    return this.usersRepository.softDelete(id);
+    try {
+      const res = await this.usersRepository.softDelete(id);
+      const message =
+        res.affected > 0 ? 'User deleted successfully' : 'Error deleting user';
+      return { message };
+    } catch (err) {
+      throw new InternalServerErrorException(err.message);
+    }
   }
 }
