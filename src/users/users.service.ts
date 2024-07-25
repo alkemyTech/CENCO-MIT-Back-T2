@@ -56,21 +56,7 @@ export class UsersService {
     return `This action updates a #${id} user`;
   }
 
-  async updateStatus(id: UUID) {
-    try {
-      const user = await this.usersRepository.findOne({
-        where: { id },
-      });
-      if (!user) throw new NotFoundException('User not found');
-      user.active = false;
-      this.usersRepository.merge(user, { active: user.active });
-      return this.usersRepository.save(user);
-    } catch (err) {
-      throw new InternalServerErrorException(err.message);
-    }
-  }
-
-  async remove(id: number) {
-    return `This action removes a #${id} user`;
+  async remove(id: UUID) {
+    return this.usersRepository.softDelete(id);
   }
 }
