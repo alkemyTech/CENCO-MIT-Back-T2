@@ -7,16 +7,16 @@ import {
   Param,
   Delete,
   Query,
-  UseGuards
+  UseGuards,
   ClassSerializerInterceptor,
   UseInterceptors,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto, UpdateUserDto } from './dto';
-import { UUID } from 'crypto';
 import { RolesGuard } from '../auth/guards';
 import { Roles } from 'src/auth/decorators';
 import { Role } from './entities';
+import { UUID } from 'node:crypto';
 
 @Controller('users')
 export class UsersController {

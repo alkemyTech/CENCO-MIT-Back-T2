@@ -8,7 +8,7 @@ import { CreateUserDto, UpdateUserDto } from './dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities';
 import { Repository } from 'typeorm';
-import { UUID, randomUUID } from 'crypto';
+import { UUID, randomUUID } from 'node:crypto';
 import { genSalt, hash } from 'bcrypt';
 
 @Injectable()
@@ -52,7 +52,7 @@ export class UsersService {
       }
       this.logger.log('Returned all users');
       return users;
-    } catch (err) 
+    } catch (err) {
       this.logger.error(err);
       throw err;
     }
@@ -69,7 +69,6 @@ export class UsersService {
       throw err;
     }
   }
-
 
   async findByEmail(email: string) {
     try {
@@ -116,7 +115,4 @@ export class UsersService {
       throw err;
     }
   }
-
-
-
 }
