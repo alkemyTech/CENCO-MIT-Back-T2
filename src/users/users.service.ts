@@ -10,6 +10,7 @@ import { User } from './entities';
 import { Repository } from 'typeorm';
 import { UUID, randomUUID } from 'node:crypto';
 import { genSalt, hash } from 'bcrypt';
+import { response } from 'express';
 
 @Injectable()
 export class UsersService {
