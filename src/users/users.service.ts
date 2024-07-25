@@ -7,7 +7,7 @@ import { CreateUserDto, PartialUserDto } from './dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities';
 import { Repository } from 'typeorm';
-import { randomUUID } from 'node:crypto';
+import { UUID, randomUUID } from 'crypto';
 import { genSalt, hash } from 'bcrypt';
 
 @Injectable()
@@ -54,6 +54,20 @@ export class UsersService {
 
   async update(id: number, updateUserDto: PartialUserDto) {
     return `This action updates a #${id} user`;
+  }
+
+  async updateStatus(id: UUID) {
+    try {
+      const user = await this.usersRepository.findOne({
+        where: { id },
+      });
+      if (!user) throw new NotFoundException('User not found');
+      user.active = false;
+      this.usersRepository.merge(user, { active: user.active });
+      return this.usersRepository.save(user);
+    } catch (err) {
+      throw new InternalServerErrorException(err.message);
+    }
   }
 
   async remove(id: number) {
