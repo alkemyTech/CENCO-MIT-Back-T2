@@ -35,8 +35,4 @@ export class CreateUserDto {
   @IsNotEmpty()
   @IsEnum(Role, { groups: [Role.ADMIN, Role.USER] })
   role: Role;
-
-  @IsNotEmpty()
-  @IsBoolean()
-  active: boolean;
 }

@@ -39,8 +39,14 @@ export class UsersService {
     return `This action returns all users`;
   }
 
-  async findOne(id: number) {
-    return `This action returns a #${id} user`;
+  async findOne(id: UUID) {
+    try {
+      const user = await this.usersRepository.findOne({ where: { id } });
+      if (!user) throw new NotFoundException('User not found');
+      return user;
+    } catch (err) {
+      throw new InternalServerErrorException(err.message);
+    }
   }
 
   async findByEmail(email: string) {
@@ -53,8 +59,31 @@ export class UsersService {
     }
   }
 
-  async update(id: number, updateUserDto: PartialUserDto) {
-    return `This action updates a #${id} user`;
+  async update(id: UUID, updateUserDto: PartialUserDto) {
+    try {
+      const user = await this.findOne(id);
+      if (
+        updateUserDto.rut ||
+        updateUserDto.surname ||
+        updateUserDto.password ||
+        updateUserDto.country ||
+        updateUserDto.role
+      ) {
+        throw new NotFoundException(
+          'It is not possible to update fields other than name and email',
+        );
+      }
+      if (updateUserDto.name) {
+        user.name = updateUserDto.name;
+      }
+      if (updateUserDto.email) {
+        user.email = updateUserDto.email;
+      }
+      this.usersRepository.merge(user);
+      return this.usersRepository.save(user);
+    } catch (err) {
+      throw new InternalServerErrorException(err.message);
+    }
   }
 
   async remove(id: UUID) {
