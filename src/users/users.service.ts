@@ -7,8 +7,9 @@ import { CreateUserDto, PartialUserDto } from './dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities';
 import { Repository } from 'typeorm';
-import { randomUUID } from 'node:crypto';
+import { UUID, randomUUID } from 'crypto';
 import { genSalt, hash } from 'bcrypt';
+import { response } from 'express';
 
 @Injectable()
 export class UsersService {
@@ -56,7 +57,14 @@ export class UsersService {
     return `This action updates a #${id} user`;
   }
 
-  async remove(id: number) {
-    return `This action removes a #${id} user`;
+  async remove(id: UUID) {
+    try {
+      const res = await this.usersRepository.softDelete(id);
+      const message =
+        res.affected > 0 ? 'User deleted successfully' : 'Error deleting user';
+      return { message };
+    } catch (err) {
+      throw new InternalServerErrorException(err.message);
+    }
   }
 }
