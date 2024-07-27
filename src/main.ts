@@ -1,17 +1,19 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { NestExpressApplication } from '@nestjs/platform-express';
-import { ValidationPipe } from '@nestjs/common';
-import { corsOptions } from './config/index';
+import { ValidationPipe, Logger } from '@nestjs/common';
+import { corsOptions, validationOptions } from './config/index';
 
 async function bootstrap() {
-  const app = await NestFactory.create<NestExpressApplication>(AppModule);
-  app.useGlobalPipes(
-    new ValidationPipe({
-      whitelist: true,
-    }),
-  );
+  const port = 3000;
+  const logger = new Logger('NestApplication');
+  const app = await NestFactory.create<NestExpressApplication>(AppModule, {
+    bufferLogs: true,
+  });
+  app.disable('x-powered-by');
   app.enableCors(corsOptions);
-  await app.listen(3000);
+  app.useGlobalPipes(new ValidationPipe(validationOptions));
+  await app.listen(port);
+  logger.log(`Listening on port ${port}`);
 }
 bootstrap();
