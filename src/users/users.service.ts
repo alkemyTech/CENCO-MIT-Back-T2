@@ -15,7 +15,7 @@ export class UsersService {
   constructor(
     @InjectRepository(User)
     private readonly usersRepository: Repository<User>,
-  ) {}
+  ) { }
 
   private readonly rounds: number = parseInt(process.env.SALT_ROUNDS!);
 
@@ -34,12 +34,51 @@ export class UsersService {
     }
   }
 
-  async findAll() {
-    return `This action returns all users`;
+  async findAll() {  //obtener todos los usuarios
+    const users = await this.usersRepository.find();
+    users.forEach((user) => delete user.password);
+    return users;
   }
 
-  async findOne(id: number) {
-    return `This action returns a #${id} user`;
+  // async findOne(UUID: string ) {
+  //   try {
+  //     const user = await this.usersRepository.findOneBy({ id: UUID });
+  //     if (!user) throw new NotFoundException('User not found');
+  //     delete user.password;
+  //     return user;
+  //   } catch (err) {
+  //     throw new InternalServerErrorException(err.message);
+  //   }
+  // }
+
+
+  async findByQuery(query: { name?: string; email?: string }) {
+    try {
+      const queryBuilder = this.usersRepository.createQueryBuilder('user');
+
+      if (query.name) {
+        queryBuilder.orWhere('user.name LIKE :name', { name: `%${query.name}%` });
+      }
+      if (query.email) {
+        queryBuilder.orWhere('user.email LIKE :email', { email: `%${query.email}%` });
+      }
+
+      const users = await queryBuilder.getMany();
+      users.forEach(user => delete user.password);
+      return users;
+    } catch (err) {
+      throw new InternalServerErrorException(err.message);
+    }
+  }
+
+  async findByCountry(country: string) {
+    try {
+      const users = await this.usersRepository.find({ where: { country } });
+      users.forEach(user => delete user.password);
+      return users;
+    } catch (err) {
+      throw new InternalServerErrorException(err.message);
+    }
   }
 
   async findByEmail(email: string) {
@@ -52,6 +91,8 @@ export class UsersService {
     }
   }
 
+
+
   async update(id: number, updateUserDto: PartialUserDto) {
     return `This action updates a #${id} user`;
   }
@@ -59,4 +100,7 @@ export class UsersService {
   async remove(id: number) {
     return `This action removes a #${id} user`;
   }
+
+
+
 }

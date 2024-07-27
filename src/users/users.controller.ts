@@ -6,13 +6,14 @@ import {
   Patch,
   Param,
   Delete,
+  Query
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto, PartialUserDto } from './dto';
 
 @Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(private readonly usersService: UsersService) { }
 
   @Post()
   create(@Body() createUserDto: CreateUserDto) {
@@ -24,10 +25,21 @@ export class UsersController {
     return this.usersService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.usersService.findOne(+id);
+  // @Get(':UUID')
+  // findOne(@Param('UUID') UUID: string) {
+  //   return this.usersService.findOne(UUID);
+  // }
+
+  @Get('/query')
+  findByQuery(@Query('name') name: string, @Query('email') email: string) {
+    return this.usersService.findByQuery({ name, email });
   }
+
+  @Get('/country')
+  findByCountry(@Query('country') country: string) {
+    return this.usersService.findByCountry(country);
+  }
+
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateUserDto: PartialUserDto) {
