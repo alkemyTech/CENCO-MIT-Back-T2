@@ -72,13 +72,16 @@ export class UsersService {
 
   async findByCountry(country: string) {
     try {
-      const users = await this.usersRepository.find({ where: { country } });
+      const users = await this.usersRepository.find({
+        where: { country }
+      });
       users.forEach(user => delete user.password);
       return users;
     } catch (err) {
       throw new InternalServerErrorException(err.message);
     }
   }
+
 
   async findByEmail(email: string) {
     try {
@@ -89,7 +92,6 @@ export class UsersService {
       throw new InternalServerErrorException(err.message);
     }
   }
-
 
 
   async update(id: number, updateUserDto: PartialUserDto) {

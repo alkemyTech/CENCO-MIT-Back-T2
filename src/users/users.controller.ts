@@ -31,9 +31,11 @@ export class UsersController {
     return this.usersService.findAll();
   }
 
-  @Get(':UUID')
-  findOne(@Param('UUID') UUID: string) {
-    return this.usersService.findOne(UUID);
+  @Get('/country')
+  @UseGuards(RolesGuard)
+  @Roles(Role.ADMIN)
+  async findByCountry(@Query('country') country: string) {
+    return this.usersService.findByCountry(country);
   }
 
   @Get('/query')
@@ -43,12 +45,10 @@ export class UsersController {
     return this.usersService.findByQuery({ name, email });
   }
 
-  // @UseGuards(RolesGuard)
-  // @Roles(Role.ADMIN)
-  @Get('/country')
-  findByCountry(@Query('country') country: string) {
-    console
-    return this.usersService.findByCountry(country);
+
+  @Get(':UUID')
+  findOne(@Param('UUID') UUID: string) {
+    return this.usersService.findOne(UUID);
   }
 
 

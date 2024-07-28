@@ -9,7 +9,7 @@ import { AuthService } from '../auth.service';
 
 @Injectable()
 export class JwtGuard implements CanActivate {
-  constructor(private readonly authService: AuthService) {}
+  constructor(private readonly authService: AuthService) { }
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     try {
