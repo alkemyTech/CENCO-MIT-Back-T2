@@ -40,17 +40,16 @@ export class UsersService {
     return users;
   }
 
-  // async findOne(UUID: string ) {
-  //   try {
-  //     const user = await this.usersRepository.findOneBy({ id: UUID });
-  //     if (!user) throw new NotFoundException('User not found');
-  //     delete user.password;
-  //     return user;
-  //   } catch (err) {
-  //     throw new InternalServerErrorException(err.message);
-  //   }
-  // }
-
+  async findOne(UUID: string): Promise<User> {
+    try {
+      const user = await this.usersRepository.findOneBy({ id: UUID });
+      if (!user) throw new NotFoundException('User not found');
+      delete user.password;
+      return user;
+    } catch (err) {
+      throw new InternalServerErrorException(err.message);
+    }
+  }
 
   async findByQuery(query: { name?: string; email?: string }) {
     try {

@@ -6,10 +6,14 @@ import {
   Patch,
   Param,
   Delete,
-  Query
+  Query,
+  UseGuards
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto, PartialUserDto } from './dto';
+import { RolesGuard } from '../auth/guards';
+import { Roles } from 'src/auth/decorators';
+import { Role } from './entities';
 
 @Controller('users')
 export class UsersController {
@@ -21,22 +25,29 @@ export class UsersController {
   }
 
   @Get()
+  @UseGuards(RolesGuard)
+  @Roles(Role.ADMIN)
   findAll() {
     return this.usersService.findAll();
   }
 
-  // @Get(':UUID')
-  // findOne(@Param('UUID') UUID: string) {
-  //   return this.usersService.findOne(UUID);
-  // }
+  @Get(':UUID')
+  findOne(@Param('UUID') UUID: string) {
+    return this.usersService.findOne(UUID);
+  }
 
   @Get('/query')
+  @UseGuards(RolesGuard)
+  @Roles(Role.ADMIN)
   findByQuery(@Query('name') name: string, @Query('email') email: string) {
     return this.usersService.findByQuery({ name, email });
   }
 
+  // @UseGuards(RolesGuard)
+  // @Roles(Role.ADMIN)
   @Get('/country')
   findByCountry(@Query('country') country: string) {
+    console
     return this.usersService.findByCountry(country);
   }
 
