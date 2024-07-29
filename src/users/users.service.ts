@@ -1,15 +1,16 @@
 import {
+  ForbiddenException,
   Injectable,
   InternalServerErrorException,
   Logger,
   NotFoundException,
 } from '@nestjs/common';
-import { CreateUserDto, UpdateUserDto } from './dto';
+import { CreateUserDto, UpdatePasswordDto, UpdateUserDto } from './dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities';
 import { Repository } from 'typeorm';
 import { UUID, randomUUID } from 'node:crypto';
-import { genSalt, hash } from 'bcrypt';
+import { compare, genSalt, hash } from 'bcrypt';
 
 @Injectable()
 export class UsersService {
@@ -89,6 +90,27 @@ export class UsersService {
     } catch (err) {
       this.logger.error(err);
       throw err;
+
+  async updatePassword(id: UUID, updatePassword: UpdatePasswordDto) {
+    try {
+      const user = await this.findOne(id);
+      const isPasswordValid = await compare(
+        updatePassword.password,
+        user.password,
+      );
+      if (!isPasswordValid) {
+        throw new ForbiddenException('Invalid credentials');
+      }
+      if (updatePassword.newPassword) {
+        const salt = await genSalt(this.rounds);
+        const hashed = await hash(updatePassword.newPassword!, salt);
+        user.password = hashed;
+      }
+      this.usersRepository.merge({ ...user, ...updatePassword });
+      this.logger.log('Password successfully updated');
+      return this.usersRepository.save(user);
+    } catch (err) {
+      throw new InternalServerErrorException(err.message);
     }
   }
 
