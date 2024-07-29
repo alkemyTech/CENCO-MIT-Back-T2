@@ -32,7 +32,6 @@ export class UsersService {
       this.logger.log('User successfully created');
       return newUser;
     } catch (err) {
-      this.logger.error(err);
       throw err;
     }
   }
@@ -53,7 +52,6 @@ export class UsersService {
       this.logger.log('Returned all users');
       return users;
     } catch (err) {
-      this.logger.error(err);
       throw err;
     }
   }
@@ -65,7 +63,6 @@ export class UsersService {
       this.logger.log('Returned found user');
       return user;
     } catch (err) {
-      this.logger.error(err);
       throw err;
     }
   }
@@ -93,8 +90,7 @@ export class UsersService {
       this.logger.log('User successfully updated');
       return this.usersRepository.save(user);
     } catch (err) {
-      this.logger.error(err);
-      throw new InternalServerErrorException(err.message);
+      throw err
     }
   }
 
@@ -111,7 +107,6 @@ export class UsersService {
       this.logger.log(message);
       return { message };
     } catch (err) {
-      this.logger.error(err);
       throw err;
     }
   }
