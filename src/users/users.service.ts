@@ -68,7 +68,7 @@ export class UsersService {
       if (updateUserDto.email) {
         user.email = updateUserDto.email;
       }
-      await this.usersRepository.merge({ ...user, ...updateUserDto });
+      this.usersRepository.merge({ ...user, ...updateUserDto });
       return this.usersRepository.save(user);
     } catch (err) {
       throw new InternalServerErrorException(err.message);
