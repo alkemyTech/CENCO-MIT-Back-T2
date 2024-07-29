@@ -13,7 +13,7 @@ import {
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto, UpdateUserDto } from './dto';
-import { RolesGuard } from '../auth/guards';
+import { AuthGuard, RolesGuard } from '../auth/guards';
 import { Roles } from 'src/auth/decorators';
 import { Role } from './entities';
 import { UUID } from 'node:crypto';
@@ -24,12 +24,13 @@ export class UsersController {
 
   @Post()
   create(@Body() createUserDto: CreateUserDto) {
+
     return this.usersService.create(createUserDto);
   }
 
   @UseInterceptors(ClassSerializerInterceptor)
   @Get()
-  @UseGuards(RolesGuard)
+  @UseGuards(AuthGuard, RolesGuard)
   @Roles(Role.ADMIN)
   findAll(@Query('country') country?: string, @Query('name') name?: string, @Query('email',) email?: string) {
     return this.usersService.findAll(country, name, email);
@@ -37,17 +38,23 @@ export class UsersController {
 
   @UseInterceptors(ClassSerializerInterceptor)
   @Get(':id')
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(Role.ADMIN)
   findOne(@Param('id') id: UUID) {
     return this.usersService.findOne(id);
   }
 
   @UseInterceptors(ClassSerializerInterceptor)
   @Patch(':id')
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(Role.ADMIN)
   update(@Param('id') id: UUID, @Body() updateUserDto: UpdateUserDto) {
     return this.usersService.update(id, updateUserDto);
   }
 
   @Delete(':id')
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(Role.ADMIN)
   remove(@Param('id') id: UUID) {
     return this.usersService.remove(id);
   }

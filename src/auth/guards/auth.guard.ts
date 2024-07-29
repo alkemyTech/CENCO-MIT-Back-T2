@@ -8,8 +8,8 @@ import {
 import { AuthService } from '../auth.service';
 
 @Injectable()
-export class JwtGuard implements CanActivate {
-  constructor(private readonly authService: AuthService) { }
+export class AuthGuard implements CanActivate {
+  constructor(private readonly authService: AuthService) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     try {

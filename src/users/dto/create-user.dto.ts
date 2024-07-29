@@ -1,12 +1,5 @@
-import {
-  IsNotEmpty,
-  IsString,
-  IsEmail,
-  IsEnum,
-  IsBoolean,
-} from 'class-validator';
+import { IsNotEmpty, IsString, IsEmail, IsEnum } from 'class-validator';
 import { Role } from '../entities';
-import { Exclude } from 'class-transformer';
 
 export class CreateUserDto {
   @IsNotEmpty()
@@ -25,7 +18,6 @@ export class CreateUserDto {
   @IsEmail()
   email: string;
 
-  @Exclude()
   @IsNotEmpty()
   @IsString()
   password: string;

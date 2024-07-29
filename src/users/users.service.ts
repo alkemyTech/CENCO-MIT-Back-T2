@@ -10,7 +10,6 @@ import { User } from './entities';
 import { Repository } from 'typeorm';
 import { UUID, randomUUID } from 'node:crypto';
 import { genSalt, hash } from 'bcrypt';
-import { response } from 'express';
 
 @Injectable()
 export class UsersService {
@@ -20,7 +19,7 @@ export class UsersService {
   constructor(
     @InjectRepository(User)
     private readonly usersRepository: Repository<User>,
-  ) { }
+  ) {}
 
   async create(createUserDto: CreateUserDto) {
     try {
