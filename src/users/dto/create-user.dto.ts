@@ -30,3 +30,9 @@ export class CreateUserDto {
   @IsEnum(Role, { groups: [Role.ADMIN, Role.USER] })
   role: Role;
 }
+
+export class NewPasswordDto {
+  @IsNotEmpty()
+  @IsString()
+  newPassword: string;
+}
