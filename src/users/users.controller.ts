@@ -27,30 +27,14 @@ export class UsersController {
   @Get()
   @UseGuards(RolesGuard)
   @Roles(Role.ADMIN)
-  findAll() {
-    return this.usersService.findAll();
+  findAll(@Query('country') country?: string, @Query('name') name?: string, @Query('email',) email?: string) {
+    return this.usersService.findAll(country, name, email);
   }
-
-  @Get('/country')
-  @UseGuards(RolesGuard)
-  @Roles(Role.ADMIN)
-  async findByCountry(@Query('country') country: string) {
-    return this.usersService.findByCountry(country);
-  }
-
-  @Get('/query')
-  @UseGuards(RolesGuard)
-  @Roles(Role.ADMIN)
-  findByQuery(@Query('name') name: string, @Query('email') email: string) {
-    return this.usersService.findByQuery({ name, email });
-  }
-
 
   @Get(':UUID')
   findOne(@Param('UUID') UUID: string) {
     return this.usersService.findOne(UUID);
   }
-
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateUserDto: PartialUserDto) {

@@ -34,11 +34,11 @@ export class UsersService {
     }
   }
 
-  async findAll() {  //obtener todos los usuarios
-    const users = await this.usersRepository.find();
-    users.forEach((user) => delete user.password);
-    return users;
-  }
+
+
+
+
+
 
   async findOne(UUID: string): Promise<User> {
     try {
@@ -51,31 +51,20 @@ export class UsersService {
     }
   }
 
-  async findByQuery(query: { name?: string; email?: string }) {
+
+  async findAll(country?: string, name?: string, email?: string) {
+    let users: User[];
+    let query = {
+      ...(country && { country }),
+      ...(name && { name }),
+      ...(email && { email }),
+    };
     try {
-      const queryBuilder = this.usersRepository.createQueryBuilder('user');
-
-      if (query.name) {
-        queryBuilder.orWhere('user.name LIKE :name', { name: `%${query.name}%` });
+      if (Object.keys(query).length > 0) {
+        users = await this.usersRepository.findBy(query);
+      } else {
+        users = await this.usersRepository.find();
       }
-      if (query.email) {
-        queryBuilder.orWhere('user.email LIKE :email', { email: `%${query.email}%` });
-      }
-
-      const users = await queryBuilder.getMany();
-      users.forEach(user => delete user.password);
-      return users;
-    } catch (err) {
-      throw new InternalServerErrorException(err.message);
-    }
-  }
-
-  async findByCountry(country: string) {
-    try {
-      const users = await this.usersRepository.find({
-        where: { country }
-      });
-      users.forEach(user => delete user.password);
       return users;
     } catch (err) {
       throw new InternalServerErrorException(err.message);
@@ -92,7 +81,6 @@ export class UsersService {
       throw new InternalServerErrorException(err.message);
     }
   }
-
 
   async update(id: number, updateUserDto: PartialUserDto) {
     return `This action updates a #${id} user`;
