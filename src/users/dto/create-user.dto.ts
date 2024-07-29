@@ -6,6 +6,7 @@ import {
   IsBoolean,
 } from 'class-validator';
 import { Role } from '../entities';
+import { Exclude } from 'class-transformer';
 
 export class CreateUserDto {
   @IsNotEmpty()
@@ -24,6 +25,7 @@ export class CreateUserDto {
   @IsEmail()
   email: string;
 
+  @Exclude()
   @IsNotEmpty()
   @IsString()
   password: string;
@@ -35,8 +37,4 @@ export class CreateUserDto {
   @IsNotEmpty()
   @IsEnum(Role, { groups: [Role.ADMIN, Role.USER] })
   role: Role;
-
-  @IsNotEmpty()
-  @IsBoolean()
-  active: boolean;
 }

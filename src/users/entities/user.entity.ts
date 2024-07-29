@@ -3,6 +3,7 @@ import { Role } from './role.enum';
 import {
   Column,
   CreateDateColumn,
+  DeleteDateColumn,
   Entity,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -39,12 +40,12 @@ export class User {
   })
   role: Role;
 
-  @Column()
-  active: boolean;
-
   @CreateDateColumn()
   createdDate?: Date;
 
   @UpdateDateColumn()
   lastUpdatedDate?: Date;
+
+  @DeleteDateColumn()
+  deletedDate?: Date;
 }
