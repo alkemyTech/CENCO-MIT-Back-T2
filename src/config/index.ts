@@ -1,5 +1,6 @@
 import { BadRequestException, Logger } from '@nestjs/common';
 import { CorsOptions } from '@nestjs/common/interfaces/external/cors-options.interface';
+import { Transform } from 'class-transformer';
 import { ValidationError } from 'class-validator';
 
 const logger = new Logger('NestApplication');
@@ -18,6 +19,7 @@ const customExceptionFactory = (errors: ValidationError[]) => {
 export const validationOptions = {
   whitelist: true,
   validationError: { target: false, value: false },
+  Transform: true,
   exceptionFactory: customExceptionFactory,
 };
 
