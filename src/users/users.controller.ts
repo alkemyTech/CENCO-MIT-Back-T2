@@ -36,6 +36,13 @@ export class UsersController {
     return this.usersService.findAll(country, name, email);
   }
 
+
+  @Get(':id/info')
+  @UseGuards(AuthGuard)
+  getInfo(@Param('id') id: UUID) {
+    return this.usersService.getInfo(id);
+  }
+
   @UseInterceptors(ClassSerializerInterceptor)
   @Get(':id')
   @UseGuards(AuthGuard, RolesGuard)

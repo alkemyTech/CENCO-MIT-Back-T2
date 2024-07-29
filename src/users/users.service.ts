@@ -19,7 +19,7 @@ export class UsersService {
   constructor(
     @InjectRepository(User)
     private readonly usersRepository: Repository<User>,
-  ) {}
+  ) { }
 
   async create(createUserDto: CreateUserDto) {
     try {
@@ -73,6 +73,18 @@ export class UsersService {
       if (!user) throw new NotFoundException('User not found');
       return user;
     } catch (err) {
+      throw err;
+    }
+  }
+
+  async getInfo(id: UUID) {
+    try {
+      const user = await this.usersRepository.findOne({ where: { id } });
+      if (!user) throw new NotFoundException('User not found');
+      this.logger.log('Returned profile user');
+      return user;
+    } catch (err) {
+      this.logger.error(err);
       throw err;
     }
   }
