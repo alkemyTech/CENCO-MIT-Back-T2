@@ -12,7 +12,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { CreateUserDto, UpdateUserDto } from './dto';
+import { CreateUserDto, UpdatePasswordDto, UpdateUserDto } from './dto';
 import { AuthGuard, RolesGuard } from '../auth/guards';
 import { Roles } from 'src/auth/decorators';
 import { Role } from './entities';
@@ -20,11 +20,10 @@ import { UUID } from 'node:crypto';
 
 @Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) { }
+  constructor(private readonly usersService: UsersService) {}
 
   @Post()
   create(@Body() createUserDto: CreateUserDto) {
-
     return this.usersService.create(createUserDto);
   }
 
@@ -32,7 +31,11 @@ export class UsersController {
   @Get()
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(Role.ADMIN)
-  findAll(@Query('country') country?: string, @Query('name') name?: string, @Query('email',) email?: string) {
+  findAll(
+    @Query('country') country?: string,
+    @Query('name') name?: string,
+    @Query('email') email?: string,
+  ) {
     return this.usersService.findAll(country, name, email);
   }
 
@@ -42,6 +45,17 @@ export class UsersController {
   @Roles(Role.ADMIN)
   findOne(@Param('id') id: UUID) {
     return this.usersService.findOne(id);
+  }
+
+  @UseInterceptors(ClassSerializerInterceptor)
+  @Patch('/me/:id')
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(Role.USER, Role.ADMIN)
+  updatePassword(
+    @Param('id') id: UUID,
+    @Body() updatePassword: UpdatePasswordDto,
+  ) {
+    return this.usersService.updatePassword(id, updatePassword);
   }
 
   @UseInterceptors(ClassSerializerInterceptor)
