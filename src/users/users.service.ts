@@ -8,7 +8,7 @@ import { CreateUserDto, UpdateUserDto } from './dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities';
 import { Repository } from 'typeorm';
-import { UUID, randomUUID } from 'crypto';
+import { UUID, randomUUID } from 'node:crypto';
 import { genSalt, hash } from 'bcrypt';
 
 @Injectable()
@@ -32,14 +32,26 @@ export class UsersService {
       this.logger.log('User successfully created');
       return newUser;
     } catch (err) {
+      this.logger.error(err);
       throw err;
     }
   }
 
-  async findAll() {
+  async findAll(country?: string, name?: string, email?: string) {
+    let users: User[];
+    let query = {
+      ...(country && { country }),
+      ...(name && { name }),
+      ...(email && { email }),
+    };
     try {
+      if (Object.keys(query).length > 0) {
+        users = await this.usersRepository.findBy(query);
+      } else {
+        users = await this.usersRepository.find();
+      }
       this.logger.log('Returned all users');
-      return `This action returns all users`;
+      return users;
     } catch (err) {
       this.logger.error(err);
       throw err;
@@ -54,7 +66,7 @@ export class UsersService {
       return user;
     } catch (err) {
       this.logger.error(err);
-      throw new InternalServerErrorException(err.message);
+      throw err;
     }
   }
 
