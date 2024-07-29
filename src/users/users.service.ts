@@ -4,7 +4,7 @@ import {
   Logger,
   NotFoundException,
 } from '@nestjs/common';
-import { CreateUserDto, PartialUserDto } from './dto';
+import { CreateUserDto, UpdateUserDto } from './dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities';
 import { Repository } from 'typeorm';
@@ -29,9 +29,8 @@ export class UsersService {
       user.password = hashed;
       const newUser = this.usersRepository.create(user);
       await this.usersRepository.save(newUser);
-      delete user.password;
       this.logger.log('User successfully created');
-      return user;
+      return newUser;
     } catch (err) {
       throw err;
     }
@@ -39,7 +38,6 @@ export class UsersService {
 
   async findAll() {
     try {
-      // TO DO
       this.logger.log('Returned all users');
       return `This action returns all users`;
     } catch (err) {
@@ -50,12 +48,13 @@ export class UsersService {
 
   async findOne(id: UUID) {
     try {
-      // TO DO
+      const user = await this.usersRepository.findOne({ where: { id } });
+      if (!user) throw new NotFoundException('User not found');
       this.logger.log('Returned found user');
-      return `This action returns a #${id} user`;
+      return user;
     } catch (err) {
       this.logger.error(err);
-      throw err;
+      throw new InternalServerErrorException(err.message);
     }
   }
 
@@ -69,14 +68,21 @@ export class UsersService {
     }
   }
 
-  async update(id: UUID, updateUserDto: PartialUserDto) {
+  async update(id: UUID, updateUserDto: UpdateUserDto) {
     try {
-      // TO DO
+      const user = await this.findOne(id);
+      if (updateUserDto.name) {
+        user.name = updateUserDto.name;
+      }
+      if (updateUserDto.email) {
+        user.email = updateUserDto.email;
+      }
+      this.usersRepository.merge({ ...user, ...updateUserDto });
       this.logger.log('User successfully updated');
-      return `This action updates a #${id} user`;
+      return this.usersRepository.save(user);
     } catch (err) {
       this.logger.error(err);
-      throw err;
+      throw new InternalServerErrorException(err.message);
     }
   }
 
