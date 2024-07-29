@@ -8,12 +8,12 @@ export class AuthController {
 
   @UseInterceptors(ClassSerializerInterceptor)
   @Post('/signup')
-  signup(@Body() createUserDto: CreateUserDto) {
+  async signup(@Body() createUserDto: CreateUserDto) {
     return this.authService.signup(createUserDto);
   }
 
   @Post('/login')
   async login(@Body() user: PartialUserDto) {
-    return this.authService.login(user.email!, user.password!);
+    return this.authService.login(user);
   }
 }

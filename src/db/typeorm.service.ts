@@ -14,7 +14,6 @@ export class TypeOrmConfigService implements TypeOrmOptionsFactory {
       database: 'talent_manager_db',
       entities: [User],
       synchronize: true,
-      logging: true,
     };
   }
 }

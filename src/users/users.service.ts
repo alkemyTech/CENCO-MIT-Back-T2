@@ -1,6 +1,7 @@
 import {
   Injectable,
   InternalServerErrorException,
+  Logger,
   NotFoundException,
 } from '@nestjs/common';
 import { CreateUserDto, UpdateUserDto } from './dto';
@@ -9,42 +10,50 @@ import { User } from './entities';
 import { Repository } from 'typeorm';
 import { UUID, randomUUID } from 'crypto';
 import { genSalt, hash } from 'bcrypt';
-import { response } from 'express';
 
 @Injectable()
 export class UsersService {
+  private readonly rounds: number = parseInt(process.env.SALT_ROUNDS!);
+  private logger = new Logger(UsersService.name);
+
   constructor(
     @InjectRepository(User)
     private readonly usersRepository: Repository<User>,
   ) {}
 
-  private readonly rounds: number = parseInt(process.env.SALT_ROUNDS!);
-
   async create(createUserDto: CreateUserDto) {
-    const user: User = { id: randomUUID(), ...createUserDto };
     try {
+      const user: User = { id: randomUUID(), ...createUserDto };
       const salt = await genSalt(this.rounds);
       const hashed = await hash(user.password!, salt);
       user.password = hashed;
       const newUser = this.usersRepository.create(user);
-      this.usersRepository.save(newUser);
-      delete user.password;
-      return user;
+      await this.usersRepository.save(newUser);
+      this.logger.log('User successfully created');
+      return newUser;
     } catch (err) {
-      throw new InternalServerErrorException(err.message);
+      throw err;
     }
   }
 
   async findAll() {
-    return `This action returns all users`;
+    try {
+      this.logger.log('Returned all users');
+      return `This action returns all users`;
+    } catch (err) {
+      this.logger.error(err);
+      throw err;
+    }
   }
 
   async findOne(id: UUID) {
     try {
       const user = await this.usersRepository.findOne({ where: { id } });
       if (!user) throw new NotFoundException('User not found');
+      this.logger.log('Returned found user');
       return user;
     } catch (err) {
+      this.logger.error(err);
       throw new InternalServerErrorException(err.message);
     }
   }
@@ -55,7 +64,7 @@ export class UsersService {
       if (!user) throw new NotFoundException('User not found');
       return user;
     } catch (err) {
-      throw new InternalServerErrorException(err.message);
+      throw err;
     }
   }
 
@@ -69,20 +78,29 @@ export class UsersService {
         user.email = updateUserDto.email;
       }
       this.usersRepository.merge({ ...user, ...updateUserDto });
+      this.logger.log('User successfully updated');
       return this.usersRepository.save(user);
     } catch (err) {
+      this.logger.error(err);
       throw new InternalServerErrorException(err.message);
     }
   }
 
   async remove(id: UUID) {
     try {
+      const user = await this.usersRepository.findOneBy({ id });
+      if (!user) throw new NotFoundException('User not found');
       const res = await this.usersRepository.softDelete(id);
-      const message =
-        res.affected > 0 ? 'User deleted successfully' : 'Error deleting user';
+      const isUserDeleted = res.affected > 0;
+      const message = isUserDeleted
+        ? 'User successfully deleted'
+        : 'Error deleting user';
+      if (!isUserDeleted) throw new InternalServerErrorException(message);
+      this.logger.log(message);
       return { message };
     } catch (err) {
-      throw new InternalServerErrorException(err.message);
+      this.logger.error(err);
+      throw err;
     }
   }
 }
