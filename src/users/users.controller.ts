@@ -50,7 +50,7 @@ export class UsersController {
   @UseInterceptors(ClassSerializerInterceptor)
   @Patch('/me/:id')
   @UseGuards(AuthGuard, RolesGuard)
-  @Roles(Role.USER)
+  @Roles(Role.USER, Role.ADMIN)
   updatePassword(
     @Param('id') id: UUID,
     @Body() updatePassword: UpdatePasswordDto,
