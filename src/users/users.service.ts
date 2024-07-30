@@ -5,12 +5,13 @@ import {
   Logger,
   NotFoundException,
 } from '@nestjs/common';
-import { CreateUserDto, UpdatePasswordDto, UpdateUserDto } from './dto';
+import { CreateUserDto, PartialUserDto, UpdatePasswordDto, UpdateUserDto } from './dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities';
 import { Repository } from 'typeorm';
 import { UUID, randomUUID } from 'node:crypto';
 import { compare, genSalt, hash } from 'bcrypt';
+import { Request } from 'express';
 
 @Injectable()
 export class UsersService {
@@ -50,7 +51,7 @@ export class UsersService {
       } else {
         users = await this.usersRepository.find();
       }
-      this.logger.log('Returned all users');
+      this.logger.log('Returned all users found');
       return users;
     } catch (err) {
       throw err;
@@ -78,7 +79,10 @@ export class UsersService {
     }
   }
 
-  async getInfo(id: UUID) {
+  async getInfo(id: UUID, user: PartialUserDto) {
+    if (user.id !== id) {
+      throw new ForbiddenException('Forbidden resource, users can only see their own information')
+    }
     try {
       const user = await this.usersRepository.findOne({ where: { id } });
       if (!user) throw new NotFoundException('User not found');
