@@ -24,6 +24,7 @@ export class UsersService {
   ) { }
 
   async create(createUserDto: CreateUserDto) {
+    console.log(createUserDto)
     try {
       const user: User = { id: randomUUID(), ...createUserDto };
       const salt = await genSalt(this.rounds);

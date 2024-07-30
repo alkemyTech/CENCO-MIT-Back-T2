@@ -1,5 +1,6 @@
 import { BadRequestException, ExecutionContext, Logger, Provider } from '@nestjs/common';
 import { CorsOptions } from '@nestjs/common/interfaces/external/cors-options.interface';
+import { Transform } from 'class-transformer';
 import { APP_GUARD } from '@nestjs/core';
 import { ThrottlerGuard, ThrottlerModuleOptions } from '@nestjs/throttler';
 import { ThrottlerLimitDetail } from '@nestjs/throttler/dist/throttler.guard.interface';
@@ -21,6 +22,7 @@ const customExceptionFactory = (errors: ValidationError[]) => {
 export const validationOptions = {
   whitelist: true,
   validationError: { target: false, value: false },
+  // Transform: true,
   // exceptionFactory: customExceptionFactory,
 };
 
