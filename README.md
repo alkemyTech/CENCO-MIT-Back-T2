@@ -35,18 +35,22 @@ This project is a REST API for user management, developed using NestJS and Types
    ```bash
    git clone https://github.com/your-username/your-repository.git
    cd your-repository
+   ```
 2. Install the dependencies:
    ```bash
    pnpm install # or npm install depending on package manager
+   ```
 3. Configure the environment variables. Create a .env file in the root directory and add the following variables:
    ```env
    MYSQL_USER=your-database-user
    MYSQL_PASSWORD=your-database-password
    JWT_SECRET=your-jwt-secret
    SALT=number-of-rounds-to-generate-salt
+   ```
 4. Start the application:
    ```bash
    pnpm start # or pnpm start:dev to start on watch mode
+   ```
 ## Usage
 Once the application is running, you can interact with the API using tools like Postman or cURL. You will need to obtain a JWT token through the login endpoint to access protected routes.
 
