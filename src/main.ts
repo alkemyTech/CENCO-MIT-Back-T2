@@ -5,7 +5,6 @@ import { ValidationPipe, Logger } from '@nestjs/common';
 import { corsOptions, validationOptions } from './config/index';
 import { CustomExceptionFilter } from './middleware';
 import { useContainer } from 'class-validator';
-import { UsersModule } from './users/users.module';
 
 async function bootstrap() {
   const port = 3000;
