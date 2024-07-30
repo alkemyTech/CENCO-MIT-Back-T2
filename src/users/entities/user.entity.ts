@@ -14,7 +14,7 @@ export class User {
   @PrimaryGeneratedColumn('uuid')
   id: UUID;
 
-  @Column()
+  @Column() 
   rut: string;
 
   @Column()
