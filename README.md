@@ -1,73 +1,92 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+# Project Name: User Management REST API
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
-
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Table of Contents
+- [Description](#description)
+- [Features](#features)
+- [Technologies Used](#technologies-used)
+- [Installation](#installation)
+- [Usage](#usage)
+- [API Endpoints](#api-endpoints)
+- [Contributing](#contributing)
+- [License](#license)
 
 ## Description
+This project is a REST API for user management, developed using NestJS and Typescript. The API includes functionalities for user authentication and authorization using JWT, password encryption with Bcrypt, and data validation with class-validator. Administrators have the ability to create, edit, and delete users, while regular users can view and update their own information.
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## Features
+- **User Authentication**: Secure user authentication using JSON Web Tokens (JWT).
+- **Password Encryption**: Passwords are securely stored using Bcrypt.
+- **User Management**:
+  - **Administrators**: Create, edit, and delete user accounts.
+  - **Regular Users**: View their own information and update their name, email, or password.
+- **Data Validation**: Input validation using class-validator to ensure data integrity.
+- **Database Integration**: MySQL database integration using TypeORM.
+
+## Technologies Used
+- **NestJS**: A progressive Node.js framework for building efficient, reliable, and scalable server-side applications.
+- **TypeORM**: An ORM for TypeScript and JavaScript (ES7, ES6, ES5) that supports MySQL and other databases.
+- **class-validator**: A library for validation in TypeScript.
+- **MySQL**: A relational database management system.
+- **Bcrypt**: A library to help you hash passwords.
+- **JWT (JSON Web Tokens)**: A compact, URL-safe means of representing claims to be transferred between two parties.
 
 ## Installation
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/your-username/your-repository.git
+   cd your-repository
+2. Install the dependencies:
+   ```bash
+   pnpm install # or npm install depending on package manager
+3. Configure the environment variables. Create a .env file in the root directory and add the following variables:
+   ```env
+   MYSQL_USER=your-database-user
+   MYSQL_PASSWORD=your-database-password
+   JWT_SECRET=your-jwt-secret
+   SALT=number-of-rounds-to-generate-salt
+4. Start the application:
+   ```bash
+   pnpm start # or pnpm start:dev to start on watch mode
+## Usage
+Once the application is running, you can interact with the API using tools like Postman or cURL. You will need to obtain a JWT token through the login endpoint to access protected routes.
 
-```bash
-$ pnpm install
-```
+## API Endpoints
+### Authentication
+- **POST /auth/signup**: Register a new user.
+- **POST /auth/login**: Log in and obtain a JWT token.
 
-## Running the app
+### Users (Admin)
+- **POST /users**: Create a new user.
+- **GET /users**: Get a list of all users. Optional query params: country, email, name.
+- **GET /users/:id**: Get details of a specific user.
+- **GET /users/:id/info**: Get details of current user (token must be for same user as id).
+- **PATCH /users/:id**: Update a specific user's information.
+- **DELETE /users/:id**: Delete a specific user.
 
-```bash
-# development
-$ pnpm run start
+### Users (Regular)
+- **GET /users/:id/info**: Get details of current authenticated user.
+- **PATCH /me/:id**: Update the authenticated user's name, email, or password.
 
-# watch mode
-$ pnpm run start:dev
+## Wireframe
 
-# production mode
-$ pnpm run start:prod
-```
+<iframe style="border: 1px solid rgba(0, 0, 0, 0.1);" width="800" height="450" src="https://www.figma.com/embed?embed_host=share&url=https%3A%2F%2Fwww.figma.com%2Fproto%2FmbtqNXlzHirdr2G2JJjt27%2FWireframe%3Fnode-id%3D2-2%26t%3DcLc3Qb2kxMgmFHiw-1%26scaling%3Dmin-zoom%26content-scaling%3Dfixed%26page-id%3D0%253A1" allowfullscreen></iframe>
 
-## Test
 
-```bash
-# unit tests
-$ pnpm run test
+![Desktop Admin View 1](TODO)
+![Desktop Admin View 2](TODO)
+![Desktop User View 1](TODO)
+![Desktop User View 2](TODO)
+![Mobile Admin View](TODO)
+![Mobile User View](TODO)
 
-# e2e tests
-$ pnpm run test:e2e
-
-# test coverage
-$ pnpm run test:cov
-```
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+## Contributing
+We welcome contributions from the community. Please follow these steps to contribute:
+1. Fork the repository.
+2. Create a new branch (`git checkout -b feature/your-feature`).
+3. Make your changes.
+4. Commit your changes (`git commit -am 'Add some feature'`).
+5. Push to the branch (`git push origin feature/your-feature`).
+6. Create a new Pull Request.
 
 ## License
-
-Nest is [MIT licensed](LICENSE).
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.

@@ -6,7 +6,12 @@ import {
   Logger,
   NotFoundException,
 } from '@nestjs/common';
-import { CreateUserDto, PartialUserDto, UpdatePasswordDto, UpdateUserDto } from './dto';
+import {
+  CreateUserDto,
+  PartialUserDto,
+  UpdatePasswordDto,
+  UpdateUserDto,
+} from './dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities';
 import { Repository } from 'typeorm';
@@ -22,10 +27,12 @@ export class UsersService {
   constructor(
     @InjectRepository(User)
     private readonly usersRepository: Repository<User>,
-  ) { }
+  ) {}
 
   async create(createUserDto: CreateUserDto) {
-    if (!this.validateRut(createUserDto.rut)) throw new BadRequestException('Rut must be a valid chilean rut')
+    if (!this.validateRut(createUserDto.rut)) {
+      throw new BadRequestException('Rut must be a valid chilean rut');
+    }
     try {
       const user: User = { id: randomUUID(), ...createUserDto };
       const salt = await genSalt(this.rounds);
@@ -83,7 +90,9 @@ export class UsersService {
 
   async getInfo(id: UUID, user: PartialUserDto) {
     if (user.id !== id) {
-      throw new ForbiddenException('Forbidden resource, users can only see their own information')
+      throw new ForbiddenException(
+        'Forbidden resource, users can only see their own information',
+      );
     }
     try {
       const user = await this.usersRepository.findOne({ where: { id } });
@@ -114,7 +123,7 @@ export class UsersService {
       this.logger.log('Password successfully updated');
       return this.usersRepository.save(user);
     } catch (err) {
-      throw err
+      throw err;
     }
   }
 
@@ -131,7 +140,7 @@ export class UsersService {
       this.logger.log('User successfully updated');
       return this.usersRepository.save(user);
     } catch (err) {
-      throw err
+      throw err;
     }
   }
 
@@ -156,12 +165,17 @@ export class UsersService {
     if (!/([1-9]{1}[0-9]{6,7}-[0-9|K]{1})/gim.test(rut)) return false;
     const series = [2, 3, 4, 5, 6, 7];
     let charToValidate = rut.substring(rut.length - 1);
-    if (isNaN(+charToValidate)) charToValidate = charToValidate.toLocaleUpperCase();
+    if (isNaN(+charToValidate)) {
+      charToValidate = charToValidate.toLocaleUpperCase();
+    }
     const totalSum = rut
       .substring(0, rut.length - 2)
       .split('')
       .reverse()
-      .map((digit, index) => parseInt(digit) * series[index <= 5 ? index : index - 6])
+      .map(
+        (digit, index) =>
+          parseInt(digit) * series[index <= 5 ? index : index - 6],
+      )
       .reduce((acc, cur) => acc + cur, 0);
     const truncatedSum = Math.trunc(totalSum / 11) * 11;
     const finalNumber = 11 - (totalSum - truncatedSum);
