@@ -8,6 +8,7 @@ import { TypeOrmConfigService } from './db/typeorm.service';
 import { AuthModule } from './auth/auth.module';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { throttlerOptions, throttlerProvider } from './config';
+import { IsUnique } from './auth/decorators/is-unique';
 
 @Module({
   imports: [

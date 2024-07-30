@@ -4,6 +4,8 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import { ValidationPipe, Logger } from '@nestjs/common';
 import { corsOptions, validationOptions } from './config/index';
 import { CustomExceptionFilter } from './middleware';
+import { useContainer } from 'class-validator';
+import { UsersModule } from './users/users.module';
 
 async function bootstrap() {
   const port = 3000;
@@ -15,6 +17,7 @@ async function bootstrap() {
   app.enableCors(corsOptions);
   app.useGlobalPipes(new ValidationPipe(validationOptions));
   app.useGlobalFilters(new CustomExceptionFilter());
+  useContainer(app.select(UsersModule), { fallbackOnErrors: true })
   await app.listen(port);
   logger.log(`Listening on port ${port}`);
 }

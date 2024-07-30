@@ -5,6 +5,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from 'src/users/entities';
 import { UsersService } from 'src/users/users.service';
+import { IsUnique } from './decorators/is-unique';
 
 @Module({
   imports: [JwtModule.register({
@@ -13,6 +14,6 @@ import { UsersService } from 'src/users/users.service';
   TypeOrmModule.forFeature([User])
 ],
   controllers: [AuthController],
-  providers: [AuthService, UsersService]
+  providers: [AuthService, UsersService, IsUnique]
 })
 export class AuthModule {}

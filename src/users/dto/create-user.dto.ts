@@ -7,8 +7,10 @@ import {
   IsStrongPassword,
   Length,
   Matches,
+  Validate,
 } from 'class-validator';
 import { Role } from '../entities';
+import { IsUnique } from 'src/auth/decorators/is-unique';
 
 export class CreateUserDto {
   @Matches(/([1-9]{1}[0-9]{6,7}-[0-9|K]{1})/gim, {
@@ -18,6 +20,7 @@ export class CreateUserDto {
   @IsNotEmpty()
   @IsString()
   @Length(8, 10)
+  @Validate(IsUnique, ['user', 'rut'])
   rut: string;
 
   @IsNotEmpty()
@@ -33,6 +36,7 @@ export class CreateUserDto {
   @IsNotEmpty()
   @IsEmail()
   @Length(1, 100)
+  @Validate(IsUnique, ['user', 'email'])
   email: string;
 
   @IsNotEmpty()
