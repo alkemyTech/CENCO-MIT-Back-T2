@@ -44,6 +44,7 @@ export class UsersController {
 
 
   @Get(':id/info')
+
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(Role.ADMIN, Role.USER)
   @UseInterceptors(ClassSerializerInterceptor)
@@ -72,7 +73,6 @@ export class UsersController {
   ) {
     return this.usersService.updatePassword(id, updatePassword);
   }
-
 
   @Patch(':id')
   @UseGuards(AuthGuard, RolesGuard)
