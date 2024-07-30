@@ -22,7 +22,6 @@ export class AuthService {
     try {
       return this.usersService.create(createUserDto);
     } catch (err) {
-      this.logger.error(err);
       throw err;
     }
   }
@@ -57,7 +56,6 @@ export class AuthService {
         ),
       };
     } catch (err) {
-      this.logger.error(err);
       throw err;
     }
   }

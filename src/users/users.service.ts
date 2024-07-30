@@ -1,15 +1,17 @@
 import {
+  ForbiddenException,
   Injectable,
   InternalServerErrorException,
   Logger,
   NotFoundException,
 } from '@nestjs/common';
-import { CreateUserDto, UpdateUserDto } from './dto';
+import { CreateUserDto, PartialUserDto, UpdatePasswordDto, UpdateUserDto } from './dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities';
 import { Repository } from 'typeorm';
-import { UUID, randomUUID } from 'crypto';
-import { genSalt, hash } from 'bcrypt';
+import { UUID, randomUUID } from 'node:crypto';
+import { compare, genSalt, hash } from 'bcrypt';
+import { Request } from 'express';
 
 @Injectable()
 export class UsersService {
@@ -19,7 +21,7 @@ export class UsersService {
   constructor(
     @InjectRepository(User)
     private readonly usersRepository: Repository<User>,
-  ) {}
+  ) { }
 
   async create(createUserDto: CreateUserDto) {
     console.log(createUserDto)
@@ -37,12 +39,22 @@ export class UsersService {
     }
   }
 
-  async findAll() {
+  async findAll(country?: string, name?: string, email?: string) {
+    let users: User[];
+    let query = {
+      ...(country && { country }),
+      ...(name && { name }),
+      ...(email && { email }),
+    };
     try {
-      this.logger.log('Returned all users');
-      return `This action returns all users`;
+      if (Object.keys(query).length > 0) {
+        users = await this.usersRepository.findBy(query);
+      } else {
+        users = await this.usersRepository.find();
+      }
+      this.logger.log('Returned all users found');
+      return users;
     } catch (err) {
-      this.logger.error(err);
       throw err;
     }
   }
@@ -54,8 +66,7 @@ export class UsersService {
       this.logger.log('Returned found user');
       return user;
     } catch (err) {
-      this.logger.error(err);
-      throw new InternalServerErrorException(err.message);
+      throw err;
     }
   }
 
@@ -66,6 +77,43 @@ export class UsersService {
       return user;
     } catch (err) {
       throw err;
+    }
+  }
+
+  async getInfo(id: UUID, user: PartialUserDto) {
+    if (user.id !== id) {
+      throw new ForbiddenException('Forbidden resource, users can only see their own information')
+    }
+    try {
+      const user = await this.usersRepository.findOne({ where: { id } });
+      if (!user) throw new NotFoundException('User not found');
+      this.logger.log('Returned user information');
+      return user;
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async updatePassword(id: UUID, updatePassword: UpdatePasswordDto) {
+    try {
+      const user = await this.findOne(id);
+      const isPasswordValid = await compare(
+        updatePassword.password,
+        user.password,
+      );
+      if (!isPasswordValid) {
+        throw new ForbiddenException('Invalid credentials');
+      }
+      if (updatePassword.newPassword) {
+        const salt = await genSalt(this.rounds);
+        const hashed = await hash(updatePassword.newPassword!, salt);
+        user.password = hashed;
+      }
+      this.usersRepository.merge({ ...user, ...updatePassword });
+      this.logger.log('Password successfully updated');
+      return this.usersRepository.save(user);
+    } catch (err) {
+      throw err
     }
   }
 
@@ -82,8 +130,7 @@ export class UsersService {
       this.logger.log('User successfully updated');
       return this.usersRepository.save(user);
     } catch (err) {
-      this.logger.error(err);
-      throw new InternalServerErrorException(err.message);
+      throw err
     }
   }
 
@@ -100,7 +147,6 @@ export class UsersService {
       this.logger.log(message);
       return { message };
     } catch (err) {
-      this.logger.error(err);
       throw err;
     }
   }

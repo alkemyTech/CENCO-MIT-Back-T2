@@ -9,7 +9,6 @@ import {
   Matches,
 } from 'class-validator';
 import { Role } from '../entities';
-import { Exclude } from 'class-transformer';
 
 export class CreateUserDto {
   @Matches(/([1-9]{1}[0-9]{6,7}-[0-9|K]{1})/gmi, {
@@ -54,4 +53,9 @@ export class CreateUserDto {
   @IsEnum(Role, { groups: [Role.ADMIN, Role.USER] })
   role: Role;
 }
- 
+
+export class NewPasswordDto {
+  @IsNotEmpty()
+  @IsString()
+  newPassword: string;
+}
