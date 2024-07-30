@@ -17,7 +17,7 @@ async function bootstrap() {
   app.enableCors(corsOptions);
   app.useGlobalPipes(new ValidationPipe(validationOptions));
   app.useGlobalFilters(new CustomExceptionFilter());
-  useContainer(app.select(UsersModule), { fallbackOnErrors: true })
+  useContainer(app.select(AppModule), { fallbackOnErrors: true })
   await app.listen(port);
   logger.log(`Listening on port ${port}`);
 }

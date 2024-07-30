@@ -19,6 +19,6 @@ import { IsUnique } from './auth/decorators/is-unique';
     AuthModule,
   ],
   controllers: [AppController],
-  providers: [AppService, throttlerProvider],
+  providers: [AppService, throttlerProvider, IsUnique],
 })
 export class AppModule {}
