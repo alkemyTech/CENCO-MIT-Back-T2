@@ -10,6 +10,7 @@ import {
   UseGuards,
   ClassSerializerInterceptor,
   UseInterceptors,
+  Request,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto, UpdatePasswordDto, UpdateUserDto } from './dto';
@@ -23,14 +24,16 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Post()
+  @UseInterceptors(ClassSerializerInterceptor)
   create(@Body() createUserDto: CreateUserDto) {
     return this.usersService.create(createUserDto);
   }
 
-  @UseInterceptors(ClassSerializerInterceptor)
+
   @Get()
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(Role.ADMIN)
+  @UseInterceptors(ClassSerializerInterceptor)
   findAll(
     @Query('country') country?: string,
     @Query('name') name?: string,
@@ -41,23 +44,29 @@ export class UsersController {
 
 
   @Get(':id/info')
-  @UseGuards(AuthGuard)
-  getInfo(@Param('id') id: UUID) {
-    return this.usersService.getInfo(id);
+
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(Role.ADMIN, Role.USER)
+  @UseInterceptors(ClassSerializerInterceptor)
+  getInfo(@Param('id') id: UUID, @Request() req) {
+    const { user } = req;
+    return this.usersService.getInfo(id, user);
   }
 
-  @UseInterceptors(ClassSerializerInterceptor)
+
   @Get(':id')
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(Role.ADMIN)
+  @UseInterceptors(ClassSerializerInterceptor)
   findOne(@Param('id') id: UUID) {
     return this.usersService.findOne(id);
   }
 
-  @UseInterceptors(ClassSerializerInterceptor)
+
   @Patch('/me/:id')
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(Role.USER, Role.ADMIN)
+  @UseInterceptors(ClassSerializerInterceptor)
   updatePassword(
     @Param('id') id: UUID,
     @Body() updatePassword: UpdatePasswordDto,
@@ -65,10 +74,10 @@ export class UsersController {
     return this.usersService.updatePassword(id, updatePassword);
   }
 
-  @UseInterceptors(ClassSerializerInterceptor)
   @Patch(':id')
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(Role.ADMIN)
+  @UseInterceptors(ClassSerializerInterceptor)
   update(@Param('id') id: UUID, @Body() updateUserDto: UpdateUserDto) {
     return this.usersService.update(id, updateUserDto);
   }
@@ -76,6 +85,7 @@ export class UsersController {
   @Delete(':id')
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(Role.ADMIN)
+  @UseInterceptors(ClassSerializerInterceptor)
   remove(@Param('id') id: UUID) {
     return this.usersService.remove(id);
   }

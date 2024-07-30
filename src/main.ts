@@ -3,6 +3,7 @@ import { AppModule } from './app.module';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { ValidationPipe, Logger } from '@nestjs/common';
 import { corsOptions, validationOptions } from './config/index';
+import { CustomExceptionFilter } from './middleware';
 
 async function bootstrap() {
   const port = 3000;
@@ -13,6 +14,7 @@ async function bootstrap() {
   app.disable('x-powered-by');
   app.enableCors(corsOptions);
   app.useGlobalPipes(new ValidationPipe(validationOptions));
+  app.useGlobalFilters(new CustomExceptionFilter());
   await app.listen(port);
   logger.log(`Listening on port ${port}`);
 }

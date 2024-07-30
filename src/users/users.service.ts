@@ -5,12 +5,13 @@ import {
   Logger,
   NotFoundException,
 } from '@nestjs/common';
-import { CreateUserDto, UpdatePasswordDto, UpdateUserDto } from './dto';
+import { CreateUserDto, PartialUserDto, UpdatePasswordDto, UpdateUserDto } from './dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities';
 import { Repository } from 'typeorm';
 import { UUID, randomUUID } from 'node:crypto';
 import { compare, genSalt, hash } from 'bcrypt';
+import { Request } from 'express';
 
 @Injectable()
 export class UsersService {
@@ -33,7 +34,6 @@ export class UsersService {
       this.logger.log('User successfully created');
       return newUser;
     } catch (err) {
-      this.logger.error(err);
       throw err;
     }
   }
@@ -51,10 +51,9 @@ export class UsersService {
       } else {
         users = await this.usersRepository.find();
       }
-      this.logger.log('Returned all users');
+      this.logger.log('Returned all users found');
       return users;
     } catch (err) {
-      this.logger.error(err);
       throw err;
     }
   }
@@ -66,7 +65,6 @@ export class UsersService {
       this.logger.log('Returned found user');
       return user;
     } catch (err) {
-      this.logger.error(err);
       throw err;
     }
   }
@@ -81,15 +79,19 @@ export class UsersService {
     }
   }
 
-  async getInfo(id: UUID) {
+  async getInfo(id: UUID, user: PartialUserDto) {
+    if (user.id !== id) {
+      throw new ForbiddenException('Forbidden resource, users can only see their own information')
+    }
     try {
       const user = await this.usersRepository.findOne({ where: { id } });
       if (!user) throw new NotFoundException('User not found');
-      this.logger.log('Returned profile user');
+      this.logger.log('Returned user information');
       return user;
     } catch (err) {
-      this.logger.error(err);
       throw err;
+    }
+  }
 
   async updatePassword(id: UUID, updatePassword: UpdatePasswordDto) {
     try {
@@ -110,7 +112,7 @@ export class UsersService {
       this.logger.log('Password successfully updated');
       return this.usersRepository.save(user);
     } catch (err) {
-      throw new InternalServerErrorException(err.message);
+      throw err
     }
   }
 
@@ -127,8 +129,7 @@ export class UsersService {
       this.logger.log('User successfully updated');
       return this.usersRepository.save(user);
     } catch (err) {
-      this.logger.error(err);
-      throw new InternalServerErrorException(err.message);
+      throw err
     }
   }
 
@@ -145,7 +146,6 @@ export class UsersService {
       this.logger.log(message);
       return { message };
     } catch (err) {
-      this.logger.error(err);
       throw err;
     }
   }
