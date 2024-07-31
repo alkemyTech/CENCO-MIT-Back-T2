@@ -29,22 +29,23 @@ export class UsersController {
     return this.usersService.create(createUserDto);
   }
 
-
   @Get()
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(Role.ADMIN)
   @UseInterceptors(ClassSerializerInterceptor)
-  findAll(
-    @Query('country') country?: string,
-    @Query('name') name?: string,
-    @Query('email') email?: string,
-  ) {
-    return this.usersService.findAll(country, name, email);
+  findAll(@Query('search') search?: string) {
+    return this.usersService.findAll(search);
   }
 
+  @Get('country/:country')
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(Role.ADMIN)
+  @UseInterceptors(ClassSerializerInterceptor)
+  findByCountry(@Param('country') country: string) {
+    return this.usersService.findByCountry(country);
+  }
 
   @Get(':id/info')
-
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(Role.ADMIN, Role.USER)
   @UseInterceptors(ClassSerializerInterceptor)
@@ -53,7 +54,6 @@ export class UsersController {
     return this.usersService.getInfo(id, user);
   }
 
-
   @Get(':id')
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(Role.ADMIN)
@@ -61,7 +61,6 @@ export class UsersController {
   findOne(@Param('id') id: UUID) {
     return this.usersService.findOne(id);
   }
-
 
   @Patch('/me/:id')
   @UseGuards(AuthGuard, RolesGuard)
