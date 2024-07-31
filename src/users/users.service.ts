@@ -57,7 +57,7 @@ export class UsersService {
             { email: Like(`%${search}%`) },
             { country: Like(`%${search}%`) },
           ],
-        }
+        };
         users = await this.usersRepository.find(filters);
       } else {
         users = await this.usersRepository.find();
@@ -71,7 +71,9 @@ export class UsersService {
 
   async findByCountry(country: string) {
     try {
-      const user = await this.usersRepository.find({ where: { country: Like(`%${country}%`)}});
+      const user = await this.usersRepository.find({
+        where: { country: Like(`%${country}%`) },
+      });
       if (!user) throw new NotFoundException('User not found');
       this.logger.log('Returned all users found');
       return user;
@@ -102,7 +104,7 @@ export class UsersService {
   }
 
   async getInfo(id: UUID, user: PartialUserDto) {
-    if (user.id !== id) {
+    if (user.role !== 'admin' && user.id !== id) {
       throw new ForbiddenException(
         'Forbidden resource, users can only see their own information',
       );
@@ -117,7 +119,16 @@ export class UsersService {
     }
   }
 
-  async updatePassword(id: UUID, updatePassword: UpdatePasswordDto) {
+  async updatePassword(
+    id: UUID,
+    updatePassword: UpdatePasswordDto,
+    user: PartialUserDto,
+  ) {
+    if (user.role !== 'admin' && user.id !== id) {
+      throw new ForbiddenException(
+        'Forbidden resource, users can only update their own password',
+      );
+    }
     try {
       const user = await this.findOne(id);
       const isPasswordValid = await compare(
