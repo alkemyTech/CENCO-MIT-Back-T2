@@ -14,10 +14,9 @@ import {
 } from './dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities';
-import { Repository } from 'typeorm';
+import { Repository, Like } from 'typeorm';
 import { UUID, randomUUID } from 'node:crypto';
 import { compare, genSalt, hash } from 'bcrypt';
-import { Request } from 'express';
 
 @Injectable()
 export class UsersService {
@@ -47,16 +46,19 @@ export class UsersService {
     }
   }
 
-  async findAll(country?: string, name?: string, email?: string) {
+  async findAll(search?: string) {
     let users: User[];
-    let query = {
-      ...(country && { country }),
-      ...(name && { name }),
-      ...(email && { email }),
-    };
     try {
-      if (Object.keys(query).length > 0) {
-        users = await this.usersRepository.findBy(query);
+      if (search) {
+        const filters = {
+          where: [
+            { name: Like(`%${search}%`) },
+            { surname: Like(`%${search}%`) },
+            { email: Like(`%${search}%`) },
+            { country: Like(`%${search}%`) },
+          ],
+        }
+        users = await this.usersRepository.find(filters);
       } else {
         users = await this.usersRepository.find();
       }
@@ -67,11 +69,22 @@ export class UsersService {
     }
   }
 
+  async findByCountry(country: string) {
+    try {
+      const user = await this.usersRepository.find({ where: { country: Like(`%${country}%`)}});
+      if (!user) throw new NotFoundException('User not found');
+      this.logger.log('Returned all users found');
+      return user;
+    } catch (err) {
+      throw err;
+    }
+  }
+
   async findOne(id: UUID) {
     try {
       const user = await this.usersRepository.findOne({ where: { id } });
       if (!user) throw new NotFoundException('User not found');
-      this.logger.log('Returned found user');
+      this.logger.log('Returned user found');
       return user;
     } catch (err) {
       throw err;

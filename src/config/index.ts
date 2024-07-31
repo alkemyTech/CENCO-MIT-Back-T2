@@ -35,7 +35,7 @@ export const corsOptions: CorsOptions = {
 export const throttlerOptions: ThrottlerModuleOptions = [
   {
     ttl: 10000,
-    limit: 3,
+    limit: 6,
   },
 ]
 
