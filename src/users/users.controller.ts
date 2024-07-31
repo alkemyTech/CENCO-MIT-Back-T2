@@ -1,7 +1,6 @@
 import {
   Controller,
   Get,
-  Post,
   Body,
   Patch,
   Param,
@@ -13,7 +12,7 @@ import {
   Request,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { CreateUserDto, PartialUserDto, UpdatePasswordDto, UpdateUserDto } from './dto';
+import { PartialUserDto, UpdatePasswordDto, UpdateUserDto } from './dto';
 import { AuthGuard, RolesGuard } from '../auth/guards';
 import { Roles } from 'src/auth/decorators';
 import { Role } from './entities';
@@ -44,7 +43,10 @@ export class UsersController {
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(Role.ADMIN, Role.USER)
   @UseInterceptors(ClassSerializerInterceptor)
-  getInfo(@Param('id') id: UUID, @Request() req : { request: ExpressRequest, user: PartialUserDto}) {
+  getInfo(
+    @Param('id') id: UUID,
+    @Request() req: { request: ExpressRequest; user: PartialUserDto },
+  ) {
     const { user } = req;
     return this.usersService.getInfo(id, user);
   }
@@ -64,7 +66,7 @@ export class UsersController {
   updatePassword(
     @Param('id') id: UUID,
     @Body() updatePassword: UpdatePasswordDto,
-    @Request() req : { request: ExpressRequest, user: PartialUserDto}
+    @Request() req: { request: ExpressRequest; user: PartialUserDto },
   ) {
     const { user } = req;
     return this.usersService.updatePassword(id, updatePassword, user);
