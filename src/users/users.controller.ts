@@ -1,7 +1,6 @@
 import {
   Controller,
   Get,
-  Post,
   Body,
   Patch,
   Param,
@@ -13,21 +12,16 @@ import {
   Request,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { CreateUserDto, UpdatePasswordDto, UpdateUserDto } from './dto';
+import { PartialUserDto, UpdatePasswordDto, UpdateUserDto } from './dto';
 import { AuthGuard, RolesGuard } from '../auth/guards';
 import { Roles } from 'src/auth/decorators';
 import { Role } from './entities';
 import { UUID } from 'node:crypto';
+import { Request as ExpressRequest } from 'express';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
-
-  @Post()
-  @UseInterceptors(ClassSerializerInterceptor)
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.create(createUserDto);
-  }
 
   @Get()
   @UseGuards(AuthGuard, RolesGuard)
@@ -49,7 +43,10 @@ export class UsersController {
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(Role.ADMIN, Role.USER)
   @UseInterceptors(ClassSerializerInterceptor)
-  getInfo(@Param('id') id: UUID, @Request() req) {
+  getInfo(
+    @Param('id') id: UUID,
+    @Request() req: { request: ExpressRequest; user: PartialUserDto },
+  ) {
     const { user } = req;
     return this.usersService.getInfo(id, user);
   }
@@ -69,8 +66,10 @@ export class UsersController {
   updatePassword(
     @Param('id') id: UUID,
     @Body() updatePassword: UpdatePasswordDto,
+    @Request() req: { request: ExpressRequest; user: PartialUserDto },
   ) {
-    return this.usersService.updatePassword(id, updatePassword);
+    const { user } = req;
+    return this.usersService.updatePassword(id, updatePassword, user);
   }
 
   @Patch(':id')
