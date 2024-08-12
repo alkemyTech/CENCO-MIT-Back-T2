@@ -152,9 +152,9 @@ export class UsersService {
   }
 
   async update(id: UUID, updateUserDto: UpdateUserDto, user: PartialUserDto) {
-    if (user.role !== 'admin') {
+    if (user.role === 'user' && updateUserDto.email) {
       throw new ForbiddenException(
-        'Forbidden resource, only admins can update user information.',
+        "Forbidden resource, you don't have permission to update this information.",
       );
     }
     try {
