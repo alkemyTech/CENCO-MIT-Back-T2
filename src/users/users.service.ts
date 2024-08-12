@@ -138,12 +138,12 @@ export class UsersService {
       if (!isPasswordValid) {
         throw new ForbiddenException('Invalid credentials');
       }
-      if (updatePassword.newPassword) {
-        const salt = await genSalt(this.rounds);
-        const hashed = await hash(updatePassword.newPassword!, salt);
-        user.password = hashed;
+      if (!updatePassword.newPassword) {
+        throw new ForbiddenException('Must provide new password');
       }
-      this.usersRepository.merge({ ...user, ...updatePassword });
+      const salt = await genSalt(this.rounds);
+      const hashed = await hash(updatePassword.newPassword!, salt);
+      user.password = hashed;
       this.logger.log('Password successfully updated');
       return this.usersRepository.save(user);
     } catch (err) {
@@ -159,24 +159,12 @@ export class UsersService {
     }
     try {
       const user = await this.findOne(id);
-      if (updateUserDto.name) {
-        user.name = updateUserDto.name;
-      }
-      if ( updateUserDto.surname) {
-        user.surname = updateUserDto.surname;
-      }
-      if (updateUserDto.email) {
-        user.email = updateUserDto.email;
-      }
-      if ( updateUserDto.country) {
-        user.country = updateUserDto.country;
-      }
-      if (updateUserDto.role) {
-        user.role = updateUserDto.role;
-      }
-      this.usersRepository.merge({ ...user, ...updateUserDto });
+      const updatedUser = this.usersRepository.merge({
+        ...user,
+        ...updateUserDto,
+      });
       this.logger.log('User successfully updated');
-      return this.usersRepository.save(user);
+      return this.usersRepository.save(updatedUser);
     } catch (err) {
       throw err;
     }
