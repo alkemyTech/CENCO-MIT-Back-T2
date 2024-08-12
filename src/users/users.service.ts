@@ -152,7 +152,7 @@ export class UsersService {
   }
 
   async update(id: UUID, updateUserDto: UpdateUserDto, user: PartialUserDto) {
-    if (user.role === 'user' && updateUserDto.email) {
+    if (user.role === 'user' && (updateUserDto.email || updateUserDto.role)) {
       throw new ForbiddenException(
         "Forbidden resource, you don't have permission to update this information.",
       );
