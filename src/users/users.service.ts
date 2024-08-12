@@ -124,7 +124,7 @@ export class UsersService {
     updatePassword: UpdatePasswordDto,
     user: PartialUserDto,
   ) {
-    if (user.role !== 'admin' && user.id !== id) {
+    if (user.id !== id) {
       throw new ForbiddenException(
         'Forbidden resource, users can only update their own password',
       );
@@ -151,14 +151,28 @@ export class UsersService {
     }
   }
 
-  async update(id: UUID, updateUserDto: UpdateUserDto) {
+  async update(id: UUID, updateUserDto: UpdateUserDto, user: PartialUserDto) {
+    if (user.role !== 'admin') {
+      throw new ForbiddenException(
+        'Forbidden resource, only admins can update user information.',
+      );
+    }
     try {
       const user = await this.findOne(id);
       if (updateUserDto.name) {
         user.name = updateUserDto.name;
       }
+      if ( updateUserDto.surname) {
+        user.surname = updateUserDto.surname;
+      }
       if (updateUserDto.email) {
         user.email = updateUserDto.email;
+      }
+      if ( updateUserDto.country) {
+        user.country = updateUserDto.country;
+      }
+      if (updateUserDto.role) {
+        user.role = updateUserDto.role;
       }
       this.usersRepository.merge({ ...user, ...updateUserDto });
       this.logger.log('User successfully updated');
