@@ -74,10 +74,15 @@ export class UsersController {
 
   @Patch(':id')
   @UseGuards(AuthGuard, RolesGuard)
-  @Roles(Role.ADMIN)
+  @Roles(Role.ADMIN, Role.USER)
   @UseInterceptors(ClassSerializerInterceptor)
-  update(@Param('id') id: UUID, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.update(id, updateUserDto);
+  update(
+    @Param('id') id: UUID,
+    @Body() updateUserDto: UpdateUserDto,
+    @Request() req: { request: ExpressRequest; user: PartialUserDto },
+  ) {
+    const { user } = req;
+    return this.usersService.update(id, updateUserDto, user);
   }
 
   @Delete(':id')
