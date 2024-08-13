@@ -66,11 +66,12 @@ Once the application is running, you can interact with the API using tools like 
 - **GET /users/:id/info**: Get details of current user (auth token must be for same user as id).
 - **GET /users/country/:country**: Get a list of all users from country.
 - **PATCH /users/:id**: Update a specific user's information.
+- **PATCH /me/:id**: Update the authenticated user's password.
 - **DELETE /users/:id**: Delete a specific user.
 
 ### Users (Regular)
 - **GET /users/:id/info**: Get details of current authenticated user.
-- **PATCH /me/:id**: Update the authenticated user's name, email, or password.
+- **PATCH /me/:id**: Update the authenticated user's password.
 
 ## Wireframe
 
