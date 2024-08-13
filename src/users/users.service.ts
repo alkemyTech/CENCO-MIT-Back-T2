@@ -56,11 +56,11 @@ export class UsersService {
             { surname: Like(`%${search}%`) },
             { email: Like(`%${search}%`) },
             { country: Like(`%${search}%`) },
-          ],
+          ], withDeleted: true 
         };
         users = await this.usersRepository.find(filters);
       } else {
-        users = await this.usersRepository.find();
+        users = await this.usersRepository.find( {withDeleted: true });
       }
       this.logger.log('Returned all users found');
       return users;
