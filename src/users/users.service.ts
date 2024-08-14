@@ -124,7 +124,7 @@ export class UsersService {
     updatePassword: UpdatePasswordDto,
     user: PartialUserDto,
   ) {
-    if (user.role !== 'admin' && user.id !== id) {
+    if (user.id !== id) {
       throw new ForbiddenException(
         'Forbidden resource, users can only update their own password',
       );
@@ -138,12 +138,12 @@ export class UsersService {
       if (!isPasswordValid) {
         throw new ForbiddenException('Invalid credentials');
       }
-      if (updatePassword.newPassword) {
-        const salt = await genSalt(this.rounds);
-        const hashed = await hash(updatePassword.newPassword!, salt);
-        user.password = hashed;
+      if (!updatePassword.newPassword) {
+        throw new ForbiddenException('Must provide new password');
       }
-      this.usersRepository.merge({ ...user, ...updatePassword });
+      const salt = await genSalt(this.rounds);
+      const hashed = await hash(updatePassword.newPassword!, salt);
+      user.password = hashed;
       this.logger.log('Password successfully updated');
       return this.usersRepository.save(user);
     } catch (err) {
@@ -151,18 +151,20 @@ export class UsersService {
     }
   }
 
-  async update(id: UUID, updateUserDto: UpdateUserDto) {
+  async update(id: UUID, updateUserDto: UpdateUserDto, user: PartialUserDto) {
+    if (user.role === 'user' && (updateUserDto.email || updateUserDto.role)) {
+      throw new ForbiddenException(
+        "Forbidden resource, you don't have permission to update this information.",
+      );
+    }
     try {
       const user = await this.findOne(id);
-      if (updateUserDto.name) {
-        user.name = updateUserDto.name;
-      }
-      if (updateUserDto.email) {
-        user.email = updateUserDto.email;
-      }
-      this.usersRepository.merge({ ...user, ...updateUserDto });
+      const updatedUser = this.usersRepository.merge({
+        ...user,
+        ...updateUserDto,
+      });
       this.logger.log('User successfully updated');
-      return this.usersRepository.save(user);
+      return this.usersRepository.save(updatedUser);
     } catch (err) {
       throw err;
     }
