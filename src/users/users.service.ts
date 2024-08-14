@@ -169,10 +169,11 @@ export class UsersService {
         if (email) user.email = email;
         if (role) user.role = role;
       }
-      const { name, surname, country } = updateUserDto;
+      const { name, surname, country, phone } = updateUserDto;
       if (name) user.name = name;
       if (surname) user.surname = surname;
       if (country) user.country = country;
+      if (phone) user.phone = phone;
       this.logger.log('User successfully updated');
       return this.usersRepository.save(user);
     } catch (err) {

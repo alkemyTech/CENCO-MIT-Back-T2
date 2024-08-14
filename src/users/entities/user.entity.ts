@@ -35,6 +35,9 @@ export class User {
   @Column()
   country: string;
 
+  @Column({type: 'bigint'})
+  phone: number;
+
   @Column({
     type: 'enum',
     enum: Role,
