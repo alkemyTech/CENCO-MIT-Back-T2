@@ -8,6 +8,10 @@ import {
   Length,
   Matches,
   Validate,
+  IsNumber,
+  MaxLength,
+  Min,
+  Max,
 } from 'class-validator';
 import { Role } from '../entities';
 import { IsUnique } from 'src/auth/decorators/is-unique';
@@ -52,6 +56,12 @@ export class CreateUserDto {
   @IsNotEmpty()
   @IsString()
   country: string;
+
+  @IsNotEmpty()
+  @IsNumber()
+  @Min(1000000000)
+  @Max(999999999999)
+  phone: number;
 
   @IsNotEmpty()
   @IsEnum(Role, { groups: [Role.ADMIN, Role.USER] })
