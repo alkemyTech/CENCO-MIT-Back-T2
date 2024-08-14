@@ -10,9 +10,10 @@ import {
   ClassSerializerInterceptor,
   UseInterceptors,
   Request,
+  Post,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { PartialUserDto, UpdatePasswordDto, UpdateUserDto } from './dto';
+import { CreateUserDto, PartialUserDto, UpdatePasswordDto, UpdateUserDto } from './dto';
 import { AuthGuard, RolesGuard } from '../auth/guards';
 import { Roles } from 'src/auth/decorators';
 import { Role } from './entities';
@@ -58,6 +59,15 @@ export class UsersController {
   findOne(@Param('id') id: UUID) {
     return this.usersService.findOne(id);
   }
+
+  @Post()
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(Role.ADMIN)
+  @UseInterceptors(ClassSerializerInterceptor)
+  create(@Body() createUserDto: CreateUserDto) {
+    return this.usersService.create(createUserDto);
+  }
+
 
   @Patch('/me/:id')
   @UseGuards(AuthGuard, RolesGuard)

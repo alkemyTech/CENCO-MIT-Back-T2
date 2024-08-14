@@ -57,10 +57,11 @@ export class UsersService {
             { email: Like(`%${search}%`) },
             { country: Like(`%${search}%`) },
           ],
+          withDeleted: true,
         };
         users = await this.usersRepository.find(filters);
       } else {
-        users = await this.usersRepository.find();
+        users = await this.usersRepository.find({ withDeleted: true });
       }
       this.logger.log('Returned all users found');
       return users;
@@ -151,20 +152,29 @@ export class UsersService {
     }
   }
 
-  async update(id: UUID, updateUserDto: UpdateUserDto, user: PartialUserDto) {
-    if (user.role === 'user' && (updateUserDto.email || updateUserDto.role)) {
+  async update(
+    id: UUID,
+    updateUserDto: UpdateUserDto,
+    currentUser: PartialUserDto,
+  ) {
+    if (currentUser.role === 'user' && (currentUser.id !== id || updateUserDto.role || updateUserDto.email)) {
       throw new ForbiddenException(
         "Forbidden resource, you don't have permission to update this information.",
       );
     }
     try {
       const user = await this.findOne(id);
-      const updatedUser = this.usersRepository.merge({
-        ...user,
-        ...updateUserDto,
-      });
+      if (currentUser.role === 'admin') {
+        const { email, role } = updateUserDto;
+        if (email) user.email = email;
+        if (role) user.role = role;
+      }
+      const { name, surname, country } = updateUserDto;
+      if (name) user.name = name;
+      if (surname) user.surname = surname;
+      if (country) user.country = country;
       this.logger.log('User successfully updated');
-      return this.usersRepository.save(updatedUser);
+      return this.usersRepository.save(user);
     } catch (err) {
       throw err;
     }
