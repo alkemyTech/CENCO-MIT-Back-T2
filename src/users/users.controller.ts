@@ -13,7 +13,12 @@ import {
   Post,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { CreateUserDto, PartialUserDto, UpdatePasswordDto, UpdateUserDto } from './dto';
+import {
+  CreateUserDto,
+  PartialUserDto,
+  UpdatePasswordDto,
+  UpdateUserDto,
+} from './dto';
 import { AuthGuard, RolesGuard } from '../auth/guards';
 import { Roles } from 'src/auth/decorators';
 import { Role } from './entities';
@@ -40,16 +45,13 @@ export class UsersController {
     return this.usersService.findByCountry(country);
   }
 
-  @Get(':id/info')
+  @Get('info')
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(Role.ADMIN, Role.USER)
   @UseInterceptors(ClassSerializerInterceptor)
-  getInfo(
-    @Param('id') id: UUID,
-    @Request() req: { request: ExpressRequest; user: PartialUserDto },
-  ) {
+  getInfo(@Request() req: { request: ExpressRequest; user: PartialUserDto }) {
     const { user } = req;
-    return this.usersService.getInfo(id, user);
+    return this.usersService.getInfo(user);
   }
 
   @Get(':id')
@@ -67,7 +69,6 @@ export class UsersController {
   create(@Body() createUserDto: CreateUserDto) {
     return this.usersService.create(createUserDto);
   }
-
 
   @Patch('/me/:id')
   @UseGuards(AuthGuard, RolesGuard)

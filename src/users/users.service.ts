@@ -104,12 +104,8 @@ export class UsersService {
     }
   }
 
-  async getInfo(id: UUID, user: PartialUserDto) {
-    if (user.role !== 'admin' && user.id !== id) {
-      throw new ForbiddenException(
-        'Forbidden resource, users can only see their own information',
-      );
-    }
+  async getInfo(user: PartialUserDto) {
+    const { id } = user;
     try {
       const user = await this.usersRepository.findOne({ where: { id } });
       if (!user) throw new NotFoundException('User not found');
