@@ -63,14 +63,14 @@ Once the application is running, you can interact with the API using tools like 
 - **POST /users**: Create a new user.
 - **GET /users**: Get a list of all users. Optional query param: search (search by name, surname, email and password).
 - **GET /users/:id**: Get details of a specific user.
-- **GET /users/:id/info**: Get details of current user (auth token must be for same user as id).
+- **GET /users/info**: Get details of current user (auth token must be for same user as id).
 - **GET /users/country/:country**: Get a list of all users from country.
 - **PATCH /users/:id**: Update a specific user's information.
 - **PATCH /users/me/:id**: Update the authenticated user's password.
 - **DELETE /users/:id**: Delete a specific user.
 
 ### Users (Regular)
-- **GET /users/:id/info**: Get details of current authenticated user.
+- **GET /users/info**: Get details of current authenticated user.
 - **PATCH /users/:id**: Update the authenticated user name, surname or country.
 - **PATCH /users/me/:id**: Update the authenticated user's password.
 
