@@ -7,7 +7,7 @@ import { CustomExceptionFilter } from './middleware';
 import { useContainer } from 'class-validator';
 
 async function bootstrap() {
-  const port = 3000;
+  const port = process.env.BACKEND_PORT || 3000;
   const logger = new Logger('NestApplication');
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
     bufferLogs: true,
