@@ -27,7 +27,7 @@ export const validationOptions = {
 };
 
 export const corsOptions: CorsOptions = {
-  origin: ['http://localhost:5173'],
+  origin: true,
   methods: ['GET', 'PATCH', 'POST', 'DELETE'],
   credentials: true,
 };
