@@ -13,7 +13,7 @@ export class TypeOrmConfigService implements TypeOrmOptionsFactory {
       port: Number(process.env.DB_PORT) || 3306,
       username: process.env.DB_USER,
       password: process.env.DB_PASSWORD,
-      database: 'talent_manager_db',
+      database: process.env.DB_NAME || 'talent_manager_db',
       entities: [User],
       synchronize: true,
       bigNumberStrings: false

@@ -1,8 +1,33 @@
 {
   "name": "cenco-mit-back-t2",
-  "version": "0.0.1",
-  "description": "",
-  "author": "",
+  "version": "1.0.0",
+  "description": "A restful API created with NestJS and MySQL to manage users, authentication and authorization.",
+  "contributors": [
+    {
+      "name": "Sara Rioseco",
+      "email": "sara.rioseco@gmail.com",
+      "url": "https://github.com/sara-rioseco"
+    },
+    {
+      "name": "Gabriela Moya",
+      "email": "g.moyamoreno@gmail.com",
+      "url": "https://github.com/gabibot"
+    },
+    {
+      "name": "Silvana Vitali",
+      "email": "silgivia@hotmail.com",
+      "url": "https://github.com/silvanavitali"
+    },
+    {
+      "name": "Sara López",
+      "email": "saralopezbz@gmail.com",
+      "url": "https://github.com/saralopezbz"
+    }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alkemyTech/CENCO-MIT-Back-T2.git"
+  },
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
@@ -76,5 +101,9 @@
     ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
-  }
+  },
+  "bugs": {
+    "url": "https://github.com/alkemyTech/CENCO-MIT-Back-T2/issues"
+  },
+  "homepage": "https://github.com/alkemyTech/CENCO-MIT-Back-T2#readme"
 }

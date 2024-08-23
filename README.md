@@ -11,14 +11,14 @@
 - [License](#license)
 
 ## Description
-This project is a REST API for user management, developed using NestJS and Typescript. The API includes functionalities for user authentication and authorization using JWT, password encryption with Bcrypt, and data validation with class-validator. Administrators have the ability to create, edit, and delete users, while regular users can view and update their own information.
+This project is a REST API for user management, developed using NestJS, MySQL and Typescript. The API includes functionalities for user authentication and authorization using JWT, password encryption with Bcrypt, and data validation with class-validator. Administrators have the ability to create, edit, and delete users, while regular users can view and update some of their own information.
 
 ## Features
 - **User Authentication**: Secure user authentication using JSON Web Tokens (JWT).
 - **Password Encryption**: Passwords are securely stored using Bcrypt.
 - **User Management**:
-  - **Administrators**: Create, edit, and delete user accounts.
-  - **Regular Users**: View their own information and update their name, email, or password.
+  - **Administrators**: Create, edit, and delete user accounts. Edit their own info except RUT and email.
+  - **Regular Users**: View their own information and update their name, email, country or password.
 - **Data Validation**: Input validation using class-validator to ensure data integrity.
 - **Database Integration**: MySQL database integration using TypeORM.
 
@@ -41,18 +41,23 @@ This project is a REST API for user management, developed using NestJS and Types
    pnpm install # or npm install depending on package manager
    ```
 3. Configure the environment variables. Create a .env file in the root directory and add the following variables:
-   ```env
-   MYSQL_USER=your-database-user
-   MYSQL_PASSWORD=your-database-password
+   ```bash
+   DB_USER=your-database-user
+   DB_PASSWORD=your-database-password
    JWT_SECRET=your-jwt-secret
    SALT=number-of-rounds-to-generate-salt
+   DB_TYPE=mysql # optional, 'mysql' by default
+   DB_HOST=localhost # optional, 'localhost' by default
+   DB_PORT=3306 #optional, 3306 by default
+   DB_NAME=your-db-name # optional, 'talent_manager_db' by default
+   BACKEND_PORT=3000 # optional, 3000 by default
    ```
 4. Start the application:
    ```bash
    pnpm start # or pnpm start:dev to start on watch mode
    ```
 ## Usage
-Once the application is running, you can interact with the API using tools like Postman or cURL. You will need to obtain a JWT token through the login endpoint to access protected routes.
+Once the application is running, you can interact with the API using tools like Postman, Insomnia or cURL. You will need to obtain a JWT token through the login endpoint to access protected routes.
 
 ## API Endpoints
 ### Authentication
@@ -73,17 +78,6 @@ Once the application is running, you can interact with the API using tools like 
 - **GET /users/info**: Get details of current authenticated user.
 - **PATCH /users/:id**: Update the authenticated user name, surname or country.
 - **PATCH /users/me/:id**: Update the authenticated user's password.
-
-## Wireframe
-
-[Figma File](https://www.figma.com/embed?embed_host=share&url=https%3A%2F%2Fwww.figma.com%2Fproto%2FmbtqNXlzHirdr2G2JJjt27%2FWireframe%3Fnode-id%3D2-2%26t%3DcLc3Qb2kxMgmFHiw-1%26scaling%3Dmin-zoom%26content-scaling%3Dfixed%26page-id%3D0%253A1)
-
-![Desktop Admin View 1](https://raw.githubusercontent.com/alkemyTech/CENCO-MIT-Back-T2/main/src/assets/img/desktop-admin1.png)
-![Desktop Admin View 2](https://raw.githubusercontent.com/alkemyTech/CENCO-MIT-Back-T2/main/src/assets/img/desktop-admin2.png)
-![Desktop User View 1](https://raw.githubusercontent.com/alkemyTech/CENCO-MIT-Back-T2/main/src/assets/img/desktop-user1.png)
-![Desktop User View 2](https://raw.githubusercontent.com/alkemyTech/CENCO-MIT-Back-T2/main/src/assets/img/desktop-user2.png)
-![Mobile Admin View](https://raw.githubusercontent.com/alkemyTech/CENCO-MIT-Back-T2/main/src/assets/img/mobile-admin.png)
-![Mobile User View](https://raw.githubusercontent.com/alkemyTech/CENCO-MIT-Back-T2/main/src/assets/img/mobile-user.png)
 
 ## Contributing
 We welcome contributions from the community. Please follow these steps to contribute:
