@@ -19,12 +19,5 @@ async function bootstrap() {
   useContainer(app.select(AppModule), { fallbackOnErrors: true })
   await app.listen(port);
   logger.log(`Listening on port ${port}`);
-  logger.log(`DB_PORT: ${process.env.DB_PORT}`)
-  logger.log(`DB_USER: ${process.env.DB_USER}`)
-  logger.log(`DB_PASSWORD: ${process.env.DB_PASSWORD}`)
-  logger.log(`DB_HOST: ${process.env.DB_HOST}`)
-  logger.log(`DB_TYPE: ${process.env.DB_TYPE}`)
-  logger.log(`BACKEND_PORT: ${process.env.BACKEND_PORT}`)
-  logger.log(`DB_NAME: ${process.env.DB_NAME}`)
 }
 bootstrap();
