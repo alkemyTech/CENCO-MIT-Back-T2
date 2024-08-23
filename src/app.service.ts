@@ -4,8 +4,8 @@ import { Injectable } from '@nestjs/common';
 export class AppService {
   get(): object {
     return {
-      name: 'CENCO-MIT-Back-T2\n',
-      version: '1.0.0\n',
+      name: 'CENCO-MIT-Back-T2',
+      version: '1.0.0',
       contributors: [
         {
           name: 'Sara López',
