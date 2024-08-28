@@ -9,16 +9,19 @@ import { AuthModule } from './auth/auth.module';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { throttlerOptions, throttlerProvider } from './config';
 import { IsUnique } from './auth/decorators/is-unique';
+import { UsersService } from './users/users.service';
+import { User } from './users/entities';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true, cache: true }),
     TypeOrmModule.forRootAsync({ useClass: TypeOrmConfigService }),
     ThrottlerModule.forRoot(throttlerOptions),
+    TypeOrmModule.forFeature([User]),
     UsersModule,
     AuthModule,
   ],
   controllers: [AppController],
-  providers: [AppService, throttlerProvider, IsUnique],
+  providers: [AppService, throttlerProvider, IsUnique, UsersService],
 })
 export class AppModule {}
