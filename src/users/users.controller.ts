@@ -24,10 +24,15 @@ import { Roles } from 'src/auth/decorators';
 import { Role } from './entities';
 import { UUID } from 'node:crypto';
 import { Request as ExpressRequest } from 'express';
+import { dummyUsers } from 'src/db';
 
 @Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(private readonly usersService: UsersService) {
+    dummyUsers.forEach((u : CreateUserDto) => {
+      this.create(u)
+    })
+  }
 
   @Get()
   @UseGuards(AuthGuard, RolesGuard)
